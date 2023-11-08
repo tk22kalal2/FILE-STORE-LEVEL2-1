@@ -6,7 +6,7 @@ from bot import Bot
 from config import ADMINS
 from helper_func import encode, get_message_id
 
-@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batchB'))
+@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch2'))
 async def batch(client: Client, message: Message):
     while True:
         try:
@@ -39,7 +39,7 @@ async def batch(client: Client, message: Message):
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
     await second_message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
     
-@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batchA'))
+@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch1'))
 async def batch(client: Client, message: Message):
     while True:
         try:
