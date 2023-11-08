@@ -7,7 +7,7 @@ from config import ADMINS
 from helper_func import encode, get_message_id
 
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch2'))
-async def batch(client: Client, message: Message):
+async def batch2(client: Client, message: Message):
     while True:
         try:
             first_message = await client.ask(text = "Forward the First Message from DB Channel (with Quotes)..\n\nor Send the DB Channel Post Link", chat_id = message.from_user.id, filters=(filters.forwarded | (filters.text & ~filters.forwarded)), timeout=60)
@@ -40,7 +40,7 @@ async def batch(client: Client, message: Message):
     await second_message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch1'))
-async def batch(client: Client, message: Message):
+async def batch1(client: Client, message: Message):
     while True:
         try:
             # Prompt the user to provide the first message from the DB Channel
