@@ -5,10 +5,25 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import Bot
 from config import ADMINS
 from helper_func import encode, get_message_id
-    
-# Batch Command 1
-@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch1'))
-async def batch_command_1(client: Client, message: Message):
+
+from telethon import types
+
+@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch'))
+async def choose_batch_command(client: Client, message: Message):
+    # Create an InlineKeyboardMarkup with two buttons
+    keyboard = types.InlineKeyboardMarkup([
+        [
+            types.InlineKeyboardButton("Batch Command 1", callback_data="batch1"),
+            types.InlineKeyboardButton("Batch Command 2", callback_data="batch2"),
+        ]
+    ])
+
+    # Ask the user to choose a batch command
+    await message.reply("Choose a batch command:", reply_markup=keyboard)
+
+
+@Bot.on_callback_query(filters.regex(r'^batch1$'))
+async def batch_command1(client: Client, callback_query: types.CallbackQuery):
     while True:
         try:
             first_message = await client.ask(
@@ -52,11 +67,13 @@ async def batch_command_1(client: Client, message: Message):
     link = f"https://t.me/{client.username}?start={base64_string}"
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
     await second_message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
+    await callback_query.answer("You chose Batch Command 1")
+
+    # Add the logic for Batch Command 1 here
 
 
-# Batch Command 2
-@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch2'))
-async def batch_command_2(client: Client, message: Message):
+@Bot.on_callback_query(filters.regex(r'^batch2$'))
+async def batch_command2(client: Client, callback_query: types.CallbackQuery):
     while True:
         try:
             # Prompt the user to provide the first message from the DB Channel
@@ -112,8 +129,9 @@ async def batch_command_2(client: Client, message: Message):
     # Send the generated links to the user
     for link in message_links:
         await message.reply(f"Here is a link for one of the messages:\n{link}")
+    await callback_query.answer("You chose Batch Command 2")
 
-
+    
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
 async def link_generator(client: Client, message: Message):
     while True:
