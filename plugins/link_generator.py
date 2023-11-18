@@ -4,7 +4,10 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import Bot
 from config import ADMINS
-from helper_func import encode, get_message_id
+from helper_func import encode, get_message_id, decode, get_messages
+from telethon import ParseMode
+from telethon.errors import FloodWait
+
 
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch'))
 async def batch(client: Client, message: Message):
@@ -60,9 +63,39 @@ async def batch(client: Client, message: Message):
         link = f"https://t.me/{client.username}?start={base64_string}"
         message_links.append(link)
 
-    # Send the generated links to the user
     for link in message_links:
-        await message.reply(f"Here is a link for one of the messages:\n{link}")      
+        try:
+            base64_string = link.split(" ", 1)[1]
+            decoded_string = await decode(base64_string)
+        except Exception as e:
+            print(f"Error decoding link: {e}")
+            return
+
+        argument = decoded_string.split("-")
+
+        try:
+            messages = await get_messages(client, ids)
+        except Exception as e:
+            print(f"Error fetching messages: {e}")
+            await message.reply_text("Something went wrong..!")
+            return
+
+        snt_msgs = []
+
+        for msg in messages:
+            try:
+                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
+                                          protect_content=PROTECT_CONTENT)
+                await asyncio.sleep(1)
+                snt_msgs.append(snt_msg)
+            except FloodWait as e:
+                await asyncio.sleep(e.x)
+                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
+                                          protect_content=PROTECT_CONTENT)
+                snt_msgs.append(snt_msg)
+            except Exception as e:
+                print(f"Error copying message: {e}")
+      
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
 async def link_generator(client: Client, message: Message):
