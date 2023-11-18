@@ -65,7 +65,7 @@ async def batch(client: Client, message: Message):
 
     for link in message_links:
         try:
-            base64_string = link.split(" ", 1)[1]
+            base64_string = link.split("=", 1)[1]
             decoded_string = await decode(base64_string)
         except Exception as e:
             print(f"Error decoding link: {e}")
