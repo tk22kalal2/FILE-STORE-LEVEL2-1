@@ -72,9 +72,29 @@ async def batch(client: Client, message: Message):
             return
 
         argument = decoded_string.split("-")
+        if len(argument) == 3:
+            try:
+                start = int(int(argument[1]) / abs(client.db_channel.id))
+                end = int(int(argument[2]) / abs(client.db_channel.id))
+            except:
+                return
+            if start <= end:
+                ids = range(start, end + 1)
+            else:
+                ids = []
+                i = start
+                while True:
+                    ids.append(i)
+                    i -= 1
+                    if i < end:
+                        break
+        elif len(argument) == 2:
+            try:
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+            except:
+                return
 
         try:
-            ids = argument
             messages = await get_messages(client, ids)
         except Exception as e:
             print(f"Error fetching messages: {e}")
