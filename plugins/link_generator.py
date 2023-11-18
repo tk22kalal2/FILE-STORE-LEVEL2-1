@@ -120,16 +120,21 @@ async def batch(client: Client, message: Message):
 
             try:
                 snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                          protect_content=PROTECT_CONTENT)
-                await asyncio.sleep(1)
-                snt_msgs.append(snt_msg)
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                          protect_content=PROTECT_CONTENT)
-                snt_msgs.append(snt_msg)
+                              protect_content=PROTECT_CONTENT)
+                try:
+                    await snt_msg.forward(chat_id='@FileStreamPavo_bot')
+                    await asyncio.sleep(1)
+                    snt_msgs.append(snt_msg)
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
+                                  protect_content=PROTECT_CONTENT)
+                    snt_msgs.append(snt_msg)
+                except Exception as e:
+                    print(f"Error forwarding message: {e}")
             except Exception as e:
                 print(f"Error copying message: {e}")
+
       
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
