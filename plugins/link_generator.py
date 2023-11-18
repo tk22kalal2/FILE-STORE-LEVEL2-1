@@ -74,6 +74,7 @@ async def batch(client: Client, message: Message):
         argument = decoded_string.split("-")
 
         try:
+            ids = argument
             messages = await get_messages(client, ids)
         except Exception as e:
             print(f"Error fetching messages: {e}")
