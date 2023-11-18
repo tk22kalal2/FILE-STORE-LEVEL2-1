@@ -7,7 +7,9 @@ from config import ADMINS
 from helper_func import encode, get_message_id, decode, get_messages
 from telethon import ParseMode
 from telethon.errors import FloodWait
-
+from pyrogram.enums import ParseMode
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.errors import FloodWait
 
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch'))
 async def batch(client: Client, message: Message):
