@@ -42,9 +42,13 @@ async def lazy_answer(client, message):
 
             # Perform a Google image search
             image_query = f"{lazy_response} image"
-            for url in search(image_query, stop=1):
+            image_url = next(search(image_query, num_results=1), None)
+
+            if image_url:
                 # Reply with the generated response and the first image URL from Google search
-                await message.reply_photo(url, caption=lazy_response)
+                await message.reply_photo(image_url, caption=lazy_response)
+            else:
+                await message.reply_text("No image found.")
 
         except Exception as error:
             print(error)
