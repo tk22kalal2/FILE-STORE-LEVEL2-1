@@ -20,24 +20,25 @@ openai.api_key = OPENAI_API
 
 @Bot.on_message(filters.private & filters.text)
 async def lazy_answer(client, message):
-    if AI == True:
+    if AI == True: 
         user_id = message.from_user.id
-        try:
-            lazy_users_message = message.text
-            response = openai.Completion.create(
-                model="text-davinci-003",
-                prompt=lazy_users_message,
-                temperature=0.5,
-                max_tokens=1000,
-                top_p=1,
-                frequency_penalty=0.1,
-                presence_penalty=0.0,
-            )
-            lazy_response = response.choices[0].text
-
-        except Exception as error:
-            print(error)
-            await message.reply_text(f'{error}')
+        if user_id:
+            try:
+                lazy_users_message = message.text
+                user_id = message.from_user.id
+                response = openai.Completion.create(
+                    model = "text-davinci-003",
+                    prompt = lazy_users_message,
+                    temperature = 0.5, 
+                    max_tokens = 1000,
+                    top_p=1,
+                    frequency_penalty=0.1,
+                    presence_penalty = 0.0,
+                )                
+                lazy_response = response.choices[0].text 
+                await message.reply(f"{lazy_response}")
+            except Exception as error:
+                print(error)
+                await message.reply_text(f'{error}')
     else:
         return
-
