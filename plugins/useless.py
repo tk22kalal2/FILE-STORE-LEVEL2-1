@@ -1,7 +1,7 @@
 from bot import Bot
 from pyrogram.types import Message
 from pyrogram import filters
-from config import ADMINS, BOT_STATS_TEXT, USER_REPLY_TEXT
+from config import ADMINS, BOT_STATS_TEXT, USER_REPLY_TEXT, TG_BOT_TOKEN
 from datetime import datetime
 from helper_func import get_readable_time
 
@@ -39,7 +39,7 @@ def handle_messages(update: Update, context):
     update.message.reply_text(chatgpt_reply)
 
 # Set up the Telegram Bot
-updater = Updater(token='YOUR_TELEGRAM_BOT_TOKEN', use_context=True)
+updater = Updater(token='TG_BOT_TOKEN', use_context=True)
 dispatcher = updater.dispatcher
 
 # Register the message handler
