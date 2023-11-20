@@ -13,7 +13,39 @@ async def stats(bot: Bot, message: Message):
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
 
+import openai
+from telegram import Update
+from telegram.ext import Filters, MessageHandler, Updater
+
+# Set your OpenAI GPT-3 API key
+openai.api_key = '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'
+
 @Bot.on_message(filters.private & filters.incoming)
-async def useless(_,message: Message):
-    if USER_REPLY_TEXT:
-        await message.reply(USER_REPLY_TEXT)
+def handle_messages(update: Update, context):
+    # Get the user's message
+    user_message = update.message.text
+
+    # Use the user's message as input to ChatGPT
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=user_message,
+        max_tokens=50  # Adjust as needed
+    )
+
+    # Extract the generated response from ChatGPT
+    chatgpt_reply = response.choices[0].text.strip()
+
+    # Send the generated response back to the user
+    update.message.reply_text(chatgpt_reply)
+
+# Set up the Telegram Bot
+updater = Updater(token='YOUR_TELEGRAM_BOT_TOKEN', use_context=True)
+dispatcher = updater.dispatcher
+
+# Register the message handler
+message_handler = MessageHandler(Filters.private & Filters.text & Filters.incoming, handle_messages)
+dispatcher.add_handler(message_handler)
+
+# Start the bot
+updater.start_polling()
+updater.idle()
