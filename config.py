@@ -8,6 +8,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
+AI = is_enabled((os.environ.get("AI","True")), False)
 
 #Bot token @Botfather
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
