@@ -26,6 +26,7 @@ async def lazy_answer(client, message):
             try:
                 lazy_users_message = message.text
                 user_id = message.from_user.id
+                prompt = f"Miss Dopamine, a female doctor, says: {lazy_users_message}"
                 response = openai.Completion.create(
                     model = "text-davinci-003",
                     prompt = lazy_users_message,
