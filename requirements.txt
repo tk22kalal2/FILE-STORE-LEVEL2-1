@@ -9,4 +9,4 @@ dnspython
 aiohttp
 telethon==1.24.0
 openai==0.27.0
-python-telegram-bot==20.3
+googlesearch-python==1.0.1
