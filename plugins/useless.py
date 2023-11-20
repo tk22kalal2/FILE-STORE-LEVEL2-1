@@ -1,7 +1,7 @@
 from bot import Bot
 from pyrogram.types import Message
 from pyrogram import filters
-from config import ADMINS, BOT_STATS_TEXT, USER_REPLY_TEXT, AI
+from config import ADMINS, BOT_STATS_TEXT, USER_REPLY_TEXT, AI, OPENAI_API
 from datetime import datetime
 from helper_func import get_readable_time
 
@@ -16,7 +16,7 @@ async def stats(bot: Bot, message: Message):
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters
 import openai
-openai.api_key = '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'
+openai.api_key = OPENAI_API
 
 @Bot.on_message(filters.private & filters.text)
 async def lazy_answer(client, message):
@@ -34,8 +34,7 @@ async def lazy_answer(client, message):
                     top_p=1,
                     frequency_penalty=0.1,
                     presence_penalty = 0.0,
-                )
-                
+                )                
                 lazy_response = response.choices[0].text 
                 await message.reply(f"{lazy_response}")
             except Exception as error:
