@@ -43,6 +43,7 @@ async def lazy_answer(client, message):
             # Perform a Google image search
             image_query = f"{lazy_response} image"
             image_url = next(search(image_query, num_results=1), None)
+            image_url = next(iter(search_results), None)
 
             if image_url:
                 # Reply with the generated response and the first image URL from Google search
