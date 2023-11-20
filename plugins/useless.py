@@ -29,7 +29,6 @@ async def lazy_answer(client, message):
         user_id = message.from_user.id
         try:
             lazy_users_message = message.text
-            prompt = f"Miss Dopamine, a female doctor, says: {lazy_users_message}"
             response = openai.Completion.create(
                 model="text-davinci-003",
                 prompt=lazy_users_message,
@@ -49,7 +48,7 @@ async def lazy_answer(client, message):
 
         except Exception as error:
             print(error)
-            await message.reply_text(f'Error aa gya Lazy Bhaiya 😀\n\n{error}')
+            await message.reply_text(f'{error}')
     else:
         return
 
