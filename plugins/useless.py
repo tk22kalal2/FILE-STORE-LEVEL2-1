@@ -25,20 +25,25 @@ async def lazy_answer(client, message):
         if user_id:
             try:
                 lazy_users_message = message.text
-                user_id = message.from_user.id
-                response = openai.Completion.create(
-                    model = "text-davinci-003",
-                    prompt = lazy_users_message,
-                    temperature = 0.5, 
-                    max_tokens = 1000,
-                    top_p=1,
-                    frequency_penalty=0.1,
-                    presence_penalty = 0.0,
-                )                
-                lazy_response = response.choices[0].text 
-                await message.reply(f"{lazy_response}")
-            except Exception as error:
-                print(error)
-                await message.reply_text(f'{error}')
-    else:
-        return
+                if lazy_users_message in ["hi", "hello"]:
+                    response_text = "Hi Doctor! My name is Miss Dopamine."
+                    await message.reply_text(response_text)
+                else:
+                    
+                    user_id = message.from_user.id
+                    response = openai.Completion.create(
+                        model = "text-davinci-003",
+                        prompt = lazy_users_message,
+                        temperature = 0.5, 
+                        max_tokens = 1000,
+                        top_p=1,
+                        frequency_penalty=0.1,
+                        presence_penalty = 0.0,
+                    )                
+                    lazy_response = response.choices[0].text 
+                    await message.reply(f"{lazy_response}")
+                except Exception as error:
+                    print(error)
+                    await message.reply_text(f'{error}')
+        else:
+            return
