@@ -42,8 +42,8 @@ async def lazy_answer(client, message):
                     )                
                     lazy_response = response.choices[0].text 
                     await message.reply(f"{lazy_response}")
-                except Exception as error:
-                    print(error)
-                    await message.reply_text(f'{error}')
+            except Exception as error:
+                print(error)
+                await message.reply_text(f'{error}')
         else:
             return
