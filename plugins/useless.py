@@ -17,13 +17,6 @@ async def stats(bot: Bot, message: Message):
     time = get_readable_time(delta.seconds)
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
-import openai
-from pyrogram import filters, Client
-from pyrogram.types import Message
-
-# Assuming AI_LOGS is defined somewhere in your code
-AI_LOGS = "your_ai_logs_channel_id"
-AI = True  # Assuming AI is defined somewhere in your code
 
 # Dictionary to store user conversations
 user_conversations = {}
@@ -51,11 +44,11 @@ async def lazy_answer(client: Client, message: Message):
                     presence_penalty=0.0,
                 )
                 lazy_response = response.choices[0].text
-                                
-                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>CONVERSATION HISTORY:-\n{prompt}\n</b>ANSWER:-\n{lazy_response}")
+
+                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>CONVERSATION HISTORY:-\n{prompt}\n</b>ANSWER:-\n{lazy_response}", parse_mode=ParseMode.HTML)
                 
                 # Add parse_mode parameter here when replying to the user
-                await message.reply(lazy_response)
+                await message.reply(lazy_response, parse_mode=ParseMode.HTML)
 
                 # Update user conversation history
                 user_conversations[user_id] = user_messages
@@ -63,5 +56,6 @@ async def lazy_answer(client: Client, message: Message):
                 print(error)
     else:
         return
+
 
 
