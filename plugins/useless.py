@@ -16,57 +16,29 @@ async def stats(bot: Bot, message: Message):
     time = get_readable_time(delta.seconds)
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
-# Assuming you have a global variable to store the conversation state
-conversation_state = {}
+
 
 @Bot.on_message(filters.private & filters.text)
-async def lazy_answer(client, message):
-    global conversation_state
-    
-    if AI:
+async def lazy_answer(client: Bot, message: Message):
+    if AI == True: 
         user_id = message.from_user.id
         if user_id:
             try:
                 lazy_users_message = message.text
-                
-                # Check if this is a new chat or a continuation of the previous one
-                if user_id in conversation_state and conversation_state[user_id]['in_progress']:
-                    # Continuing the conversation
-                    response = openai.Completion.create(
-                        model="text-davinci-003",
-                        prompt=lazy_users_message,
-                        temperature=0.5, 
-                        max_tokens=1000,
-                        top_p=1,
-                        frequency_penalty=0.1,
-                        presence_penalty=0.0,
-                    )
-                    lazy_response = response.choices[0].text
-                    await message.reply(f"{lazy_response}")
-                else:
-                    # Starting a new chat
-                    if lazy_users_message in ["hi", "hello"]:
-                        response_text = "Hi Doctor! My name is Miss Dopamine."
-                        await message.reply_text(response_text)
-                    else:
-                        response = openai.Completion.create(
-                            model="text-davinci-003",
-                            prompt=lazy_users_message,
-                            temperature=0.5, 
-                            max_tokens=1000,
-                            top_p=1,
-                            frequency_penalty=0.1,
-                            presence_penalty=0.0,
-                        )
-                        lazy_response = response.choices[0].text
-                        await client.send_message(AI_LOGS, text=f"**{message.from_user.mention}** \n`{user_id}` \nQUESTION:- \n**{lazy_users_message}**\nANSWER:- \n`{lazy_response}`")
-                        await message.reply(f"{lazy_response}")
-                    
-                    # Update conversation state
-                    conversation_state[user_id] = {'in_progress': True, 'last_message': lazy_users_message}
-                    
+                user_id = message.from_user.id
+                response = openai.Completion.create(
+                    model = "text-davinci-003",
+                    prompt = lazy_users_message,
+                    temperature = 0.5, 
+                    max_tokens = 1000,
+                    top_p=1,
+                    frequency_penalty=0.1,
+                    presence_penalty = 0.0,
+                )
+                lazy_response = response.choices[0].text 
+                await client.send_message(AI_LOGS, text=f"⚡️⚡️#Lazy_AI_Query \n\n• A user named **{message.from_user.mention}** with user id - `{user_id}`. Asked me this query...\n\n══❚█══Q   U   E   R   Y══█❚══\n\n\n[Q྿.]**{lazy_users_message}**\n\n👇Here is what i responded:\n:-`{lazy_response}`\n\n\n❚═USER ID═❚═• `{user_id}` \n❚═USER Name═❚═• `{message.from_user.mention}` \n\n🗃️" )
+                await message.reply(f"{lazy_response}")
             except Exception as error:
                 print(error)
-                await message.reply_text(f'{error}')
-        else:
-            return
+    else:
+        return
