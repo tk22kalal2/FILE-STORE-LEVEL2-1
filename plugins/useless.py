@@ -36,9 +36,12 @@ async def lazy_answer(client: Bot, message: Message):
                     presence_penalty = 0.0,
                 )
                 lazy_response = response.choices[0].text
-                await client.send_message(AI_LOGS, text=f"</b>Name - {message.from_user.mention} \n{user_id} \n</b>QUESTION:-</b> \n{lazy_users_message}\n</b>ANSWER:-</b> \n{lazy_response}")
-                await message.reply(f"{lazy_response}")
-            except Exception as error:
+                response_lines = lazy_response.split('\n')
+                formatted_response = '\n'.join([f"• {line.strip()}" for line in response_lines if line.strip()])
+
+                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>QUESTION:-\n{lazy_users_message}\n</b>ANSWER:-\n{formatted_response}", parse_mode="html")
+                await message.reply(formatted_response, parse_mode="html")            
+                except Exception as error:
                 print(error)
     else:
         return
