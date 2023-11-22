@@ -17,32 +17,51 @@ async def stats(bot: Bot, message: Message):
     time = get_readable_time(delta.seconds)
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
+import openai
+from pyrogram import filters, Client
+from pyrogram.types import Message
 
+# Assuming AI_LOGS is defined somewhere in your code
+AI_LOGS = "your_ai_logs_channel_id"
+AI = True  # Assuming AI is defined somewhere in your code
 
-@Bot.on_message(filters.private & filters.text)
-async def lazy_answer(client: Bot, message: Message):
-    if AI == True: 
+# Dictionary to store user conversations
+user_conversations = {}
+
+@Client.on_message(filters.private & filters.text)
+async def lazy_answer(client: Client, message: Message):
+    if AI:
         user_id = message.from_user.id
         if user_id:
             try:
-                lazy_users_message = message.text
-                user_id = message.from_user.id
+                # Get the user's previous messages
+                user_messages = user_conversations.get(user_id, [])
+                user_messages.append(message.text)
+
+                # Use the user's messages as a prompt
+                prompt = "\n".join(user_messages)
+
                 response = openai.Completion.create(
-                    model = "text-davinci-003",
-                    prompt = lazy_users_message,
-                    temperature = 0.5, 
-                    max_tokens = 1000,
+                    model="text-davinci-003",
+                    prompt=prompt,
+                    temperature=0.5,
+                    max_tokens=1000,
                     top_p=1,
                     frequency_penalty=0.1,
-                    presence_penalty = 0.0,
+                    presence_penalty=0.0,
                 )
                 lazy_response = response.choices[0].text
-                response_lines = lazy_response.split('\n')
-                formatted_response = '\n'.join([f"• {line.strip()}" for line in response_lines if line.strip()])
+                                
+                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>CONVERSATION HISTORY:-\n{prompt}\n</b>ANSWER:-\n{lazy_response}")
+                
+                # Add parse_mode parameter here when replying to the user
+                await message.reply(lazy_response)
 
-                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>QUESTION:-\n{lazy_users_message}\n</b>ANSWER:-\n{formatted_response}", parse_mode=ParseMode.HTML)
-                await message.reply(formatted_response, parse_mode=ParseMode.HTML)            
+                # Update user conversation history
+                user_conversations[user_id] = user_messages
             except Exception as error:
                 print(error)
     else:
         return
+
+
