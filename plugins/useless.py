@@ -21,14 +21,14 @@ async def stats(bot: Bot, message: Message):
 # Dictionary to store user conversations
 user_conversations = {}
 
-@Client.on_message(filters.private & filters.text)
+@Client.on_message((filters.private & filters.text) | (filters.command("newchat") | filters.regex('newchat⚡️')))
 async def lazy_answer(client: Client, message: Message):
     if AI:
         user_id = message.from_user.id
         if user_id:
             try:
                 # Check if user wants to start a new chat
-                if message.text.lower().strip() == "/newchat":
+                if message.text.lower().strip() == "/newchat" or message.text.strip() == 'newchat⚡️':
                     user_conversations.pop(user_id, None)  # Remove user's conversation history
                     await message.reply("New chat started. Ask me anything!")
 
