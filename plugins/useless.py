@@ -1,7 +1,7 @@
 from bot import Bot
 from pyrogram.types import Message
 from pyrogram import filters
-from config import ADMINS, BOT_STATS_TEXT, USER_REPLY_TEXT, AI, OPENAI_API
+from config import ADMINS, BOT_STATS_TEXT, USER_REPLY_TEXT, AI, OPENAI_API, AI_LOGS
 from datetime import datetime
 from helper_func import get_readable_time
 
@@ -61,6 +61,7 @@ async def lazy_answer(client, message):
                             presence_penalty=0.0,
                         )
                         lazy_response = response.choices[0].text
+                        await lazy_response.forward(chat_id=AI_LOGS)
                         await message.reply(f"{lazy_response}")
                     
                     # Update conversation state
