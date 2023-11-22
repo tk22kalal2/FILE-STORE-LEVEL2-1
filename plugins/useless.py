@@ -24,7 +24,7 @@ async def lazy_answer(client: Bot, message: Message):
         user_id = message.from_user.id
         if user_id:
             try:
-                lazy_users_message = message.text
+                lazy_users_message = point wise notes formate message.text
                 user_id = message.from_user.id
                 response = openai.Completion.create(
                     model = "text-davinci-003",
@@ -36,7 +36,6 @@ async def lazy_answer(client: Bot, message: Message):
                     presence_penalty = 0.0,
                 )
                 lazy_response = response.choices[0].text
-                formatted_response = "\n".join(f"{i + 1}. {line}" for i, line in enumerate(lazy_response.split("\n")))
                 await client.send_message(AI_LOGS, text=f"</b>Name - {message.from_user.mention} \n{user_id} \n</b>QUESTION:-</b> \n{lazy_users_message}\n</b>ANSWER:-</b> \n{lazy_response}")
                 await message.reply(f"{formatted_response}")
             except Exception as error:
