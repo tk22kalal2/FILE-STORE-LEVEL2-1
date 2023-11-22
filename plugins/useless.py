@@ -60,7 +60,7 @@ async def lazy_answer(client: Client, message: Message):
                 await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>CONVERSATION HISTORY:-\n{prompt}\n</b>ANSWER:-\n{lazy_response}", parse_mode=ParseMode.HTML)
                 
                 # Add parse_mode parameter here when replying to the user
-                await message.reply(lazy_response, parse_mode=ParseMode.HTML)
+                await message.reply(lazy_response, parse_mode=ParseMode.HTML, reply_markup=buttonz)
 
                 # Update user conversation history
                 user_conversations[user_id] = user_messages
