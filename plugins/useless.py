@@ -24,7 +24,7 @@ async def lazy_answer(client: Bot, message: Message):
         user_id = message.from_user.id
         if user_id:
             try:
-                lazy_users_message = point wise notes formate message.text
+                lazy_users_message = message.text
                 user_id = message.from_user.id
                 response = openai.Completion.create(
                     model = "text-davinci-003",
