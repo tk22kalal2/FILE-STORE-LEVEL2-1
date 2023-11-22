@@ -40,8 +40,8 @@ async def lazy_answer(client: Bot, message: Message):
                 response_lines = lazy_response.split('\n')
                 formatted_response = '\n'.join([f"• {line.strip()}" for line in response_lines if line.strip()])
 
-                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>QUESTION:-\n{lazy_users_message}\n</b>ANSWER:-\n{formatted_response}", parse_mode="html")
-                await message.reply(formatted_response, parse_mode="html")            
+                await client.send_message(AI_LOGS, text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>QUESTION:-\n{lazy_users_message}\n</b>ANSWER:-\n{formatted_response}", parse_mode=ParseMode.HTML)
+                await message.reply(formatted_response, parse_mode=ParseMode.HTML)            
             except Exception as error:
                 print(error)
     else:
