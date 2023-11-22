@@ -37,7 +37,7 @@ async def lazy_answer(client: Bot, message: Message):
                 )
                 lazy_response = response.choices[0].text
                 await client.send_message(AI_LOGS, text=f"</b>Name - {message.from_user.mention} \n{user_id} \n</b>QUESTION:-</b> \n{lazy_users_message}\n</b>ANSWER:-</b> \n{lazy_response}")
-                await message.reply(f"{formatted_response}")
+                await message.reply(f"{lazy_response}")
             except Exception as error:
                 print(error)
     else:
