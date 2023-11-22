@@ -37,8 +37,16 @@ async def lazy_answer(client: Client, message: Message):
                 # Check if user wants to start a new chat
                 if message.text.lower().strip() == "/newchat" or message.text.strip() == 'newchat⚡️':
                     user_conversations.pop(user_id, None)  # Remove user's conversation history
-                    await message.reply("New chat started. Ask me anything!")
+                    response_text = "New chat started. Ask me anything!"
+                    await message.reply(response_text)
+                    return
 
+                # Handle specific user messages
+                lazy_users_message = message.text.lower().strip()
+                if lazy_users_message in ["hi", "hello"]:
+                    response_text = "Hi Doctor! I am ChatGPT . Ask me anything related to medical study Questions."
+                    await message.reply(response_text)
+                    return
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
                 user_messages.append(message.text)
