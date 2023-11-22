@@ -27,6 +27,11 @@ async def lazy_answer(client: Client, message: Message):
         user_id = message.from_user.id
         if user_id:
             try:
+                # Check if user wants to start a new chat
+                if message.text.lower().strip() == "/newchat":
+                    user_conversations.pop(user_id, None)  # Remove user's conversation history
+                    await message.reply("New chat started. Ask me anything!")
+
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
                 user_messages.append(message.text)
@@ -56,6 +61,7 @@ async def lazy_answer(client: Client, message: Message):
                 print(error)
     else:
         return
+
 
 
 
