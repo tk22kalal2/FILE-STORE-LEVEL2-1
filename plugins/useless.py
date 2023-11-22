@@ -10,7 +10,7 @@ from pyrogram import Client, filters
 import openai
 openai.api_key = OPENAI_API
 
-custom_keyboard = ReplyKeyboardMarkup(
+buttonz = ReplyKeyboardMarkup(
     [
         ["newchat⚡️"],
     ],
