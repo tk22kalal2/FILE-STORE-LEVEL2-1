@@ -4,7 +4,7 @@ from pyrogram import __version__
 from bot import Bot
 from config import OWNER_ID
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-
+from pyrogram import Client, filters, __version__
 
 @Bot.on_callback_query()
 async def cb_handler(client: Bot, query: CallbackQuery):
@@ -40,7 +40,7 @@ async def cb_handler(client: Bot, query: CallbackQuery):
 
 # ... (other code)
 
-@Bot.on_message(filter.command("new_button"))
+@Bot.on_message(filters.command("new_button"))
 async def new_button_command(bot: Bot, message: Message):
     # Extract the new button label from the command
     new_button_label = message.text.split(" ", 1)[1]
