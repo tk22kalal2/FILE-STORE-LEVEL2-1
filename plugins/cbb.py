@@ -5,19 +5,27 @@ from bot import Bot
 from config import OWNER_ID
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters, __version__
+from pyrogram.errors import MessageNotModified
+
+# Define a dictionary to store user states
+user_states = {}
 
 @Bot.on_callback_query()
 async def cb_handler(client: Bot, query: CallbackQuery):
     data = query.data
     chat_id = query.message.chat.id
+    user_id = query.from_user.id
 
     if data == "about":
         await query.message.edit_text(
-            text=f"<b>○ Creator : <a href='https://t.me/talktomembbs_bot'>This Person</a>\n○ Language : <code>Python3</code>\n○ Library : <a href='https://docs.pyrogram.org/'>Pyrogram asyncio {__version__}</a></b>",
+            text=f"<b>○ Creator : <a href='https://t.me/talktomembbs_bot'>This Person</a>\n"
+                 f"○ Language : <code>Python3</code>\n"
+                 f"○ Library : <a href='https://docs.pyrogram.org/'>Pyrogram asyncio {__version__}</a></b>",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("🔒 Close", callback_data="close")]
+                    [InlineKeyboardButton("addbutton", callback_data="addbutton"),
+                     InlineKeyboardButton("🔒 Close", callback_data="close")]
                 ]
             )
         )
@@ -27,32 +35,39 @@ async def cb_handler(client: Bot, query: CallbackQuery):
             await query.message.reply_to_message.delete()
         except:
             pass
-    elif data.startswith("add_button:"):
-        # Extract the button label from the callback data
-        new_button_label = data.split(":")[1]
+    elif data == "addbutton":
+        # Set the user state to 'waiting_for_button_name'
+        user_states[user_id] = 'waiting_for_button_name'
 
-        # Add the new button to the existing inline keyboard
-        inline_keyboard = query.message.reply_markup.inline_keyboard
-        inline_keyboard.insert(-1, [InlineKeyboardButton(new_button_label, callback_data=f"button:{new_button_label}")])
-
-        # Edit the message to reflect the updated inline keyboard
-        await query.message.edit_reply_markup(InlineKeyboardMarkup(inline_keyboard))
-
-# ... (other code)
-
-@Bot.on_message(filters.command("new_button"))
-async def new_button_command(bot: Bot, message: Message):
-    # Extract the new button label from the command
-    new_button_label = message.text.split(" ", 1)[1]
-
-    # Send a message with the new button and a "Close" button
-    await message.reply(
-        text=f"New button added: {new_button_label}",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(new_button_label, callback_data=f"button:{new_button_label}")],
-                [InlineKeyboardButton("🔒 Close", callback_data="close")]
-            ]
+        # Prompt the user to enter the name of the new button
+        await query.message.edit_text(
+            text="Please enter the name of the new button:",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔒 Close", callback_data="close")]])
         )
-    )
 
+
+# Handle user input in a message
+@Bot.on_message()
+async def handle_message(client: Bot, message):
+    user_id = message.from_user.id
+    chat_id = message.chat.id
+
+    # Check if the user is in 'waiting_for_button_name' state
+    if user_id in user_states and user_states[user_id] == 'waiting_for_button_name':
+        # Retrieve the entered button name
+        new_button_name = message.text
+
+        # Perform the action with the new button name (e.g., add it to the inline keyboard)
+        # Here, I'm just updating the message with the new button name
+        try:
+            await message.edit_text(
+                text=f"Button added: {new_button_name}",
+                reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton("🔒 Close", callback_data="close")]]
+                )
+            )
+        except MessageNotModified:
+            pass
+
+        # Reset the user state
+        del user_states[user_id]
