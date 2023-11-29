@@ -99,12 +99,13 @@ async def start_command(client: Client, message: Message):
                 pass
 
         return
-    else:
+    else:        
         reply_markup = InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton("😊 About Me", callback_data="about"),
-                    InlineKeyboardButton("🔒 Close", callback_data="close")
+                    InlineKeyboardButton("🔒 Close", callback_data="close"),
+                    InlineKeyboardButton("🔗 Visit Pavoladder", url="https://t.me/FileXtera2_bot?start=Z2V0LTcwNDQyMTE4MjM5Nzg0OQ")
                 ]
             ]
         )
