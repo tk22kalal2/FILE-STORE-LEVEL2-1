@@ -81,7 +81,7 @@ async def start_command(client: Client, message: Message):
             if DISABLE_CHANNEL_BUTTON:
                 reply_markup = msg.reply_markup
             else:
-                reply_markup = None
+                reply_markup = buttonz
 
             try:
                 snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
