@@ -16,6 +16,12 @@ from database.database import add_user, del_user, full_userbase, present_user
 
 SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
 
+buttonz = ReplyKeyboardMarkup(
+    [
+        ["MEDICAL LECTURES"],
+    ],
+    resize_keyboard=True
+)
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
