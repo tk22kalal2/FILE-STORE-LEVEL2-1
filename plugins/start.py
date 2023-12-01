@@ -18,7 +18,7 @@ SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaitin
 
 buttonz = ReplyKeyboardMarkup(
     [
-        ["start"],
+        ["/start"],
     ],
     resize_keyboard=True
 )
