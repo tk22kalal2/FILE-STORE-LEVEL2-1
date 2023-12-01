@@ -23,7 +23,7 @@ buttonz = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-@Bot.on_message(filters.command('start') & filters.private & subscribed)
+@Bot.on_message(filters.command('start') & filters.private filters.regex('MEDICAL LECTURES')& subscribed)
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     if not await present_user(id):
