@@ -43,8 +43,14 @@ async def lazy_answer(client: Client, message: Message):
                     response_text = "New chat started. Ask me anything!"
                     await message.reply(response_text)
                     return
+                           
+                # Handle specific user messages
+                lazy_users_message = message.text.lower().strip()
+                if lazy_users_message in ["hi", "hello"]:
+                    response_text = "Hi Doctor! I am ChatGPT . Ask me anything related to medical study Questions."
+                    await message.reply(response_text)
+                    return
 
-                # Check if user wants to fetch a diagram image
                 if message.text.lower().strip() == "#diagram":
                     # Fetch a relevant image from Unsplash.com
                     image_url = fetch_unsplash_image(lazy_users_message)
@@ -53,13 +59,6 @@ async def lazy_answer(client: Client, message: Message):
                         await client.send_photo(message.chat.id, photo=image_url, caption="Here's a relevant diagram:")
                     else:
                         await message.reply("Sorry, I couldn't find a relevant diagram image.")
-                    return
-
-                # Handle specific user messages
-                lazy_users_message = message.text.lower().strip()
-                if lazy_users_message in ["hi", "hello"]:
-                    response_text = "Hi Doctor! I am ChatGPT . Ask me anything related to medical study Questions."
-                    await message.reply(response_text)
                     return
 
                 # Get the user's previous messages
