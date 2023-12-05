@@ -9,7 +9,7 @@ from logging.handlers import RotatingFileHandler
 
 OPENAI_API = os.environ.get("OPENAI_API","")
 AI = True if os.environ.get('AI', "True") == "True" else False
-AI_LOGS = int(os.environ.get("AI_LOGS","")) 
+AI_LOGS = int(os.environ.get("AI_LOGS", "0"))
 
 #Bot token @Botfather
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
