@@ -8,6 +8,8 @@ from helper_func import get_readable_time
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup
 from pyrogram import Client, filters
 import openai
+import requests
+
 openai.api_key = OPENAI_API
 
 buttonz = ReplyKeyboardMarkup(
