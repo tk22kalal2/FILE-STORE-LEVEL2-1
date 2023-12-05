@@ -26,6 +26,20 @@ async def stats(bot: Bot, message: Message):
     time = get_readable_time(delta.seconds)
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
+def fetch_unsplash_image(query):
+    # Use the Unsplash API to fetch an image based on the query    
+    try:
+        response = requests.get(
+            f"https://api.unsplash.com/photos/random?query={query}",
+            headers={"Authorization": f"Client-ID {UNSPLASH_API_KEY}"}
+        )
+        data = response.json()
+        image_url = data.get("urls", {}).get("regular")
+        return image_url
+    except Exception as e:
+        print(f"Error fetching Unsplash image: {e}")
+        return None
+        
 # Add your Unsplash API key here
 UNSPLASH_API_KEY = "7vqvT8gDlgCu18v-GuT_EPyqxtRYPMVGNBmpBE59jac"
 
@@ -52,14 +66,20 @@ async def lazy_answer(client: Client, message: Message):
                     return
 
                 if message.text.lower().strip() == "#diagram":
-                    # Fetch a relevant image from Unsplash.com
-                    image_url = fetch_unsplash_image(lazy_users_message)
+                    # Get the user's previous messages
+                    user_messages = user_conversations.get(user_id, [])
+                    # Use the user's messages as a prompt
+                    prompt = "\n".join(user_messages)
+                    # Fetch a relevant image from Unsplash.com based on the user's messages
+                    image_url = fetch_unsplash_image(prompt)
+    
                     if image_url:
-                        # Send the image to the user
+                    # Send the image to the user
                         await client.send_photo(message.chat.id, photo=image_url, caption="Here's a relevant diagram:")
                     else:
                         await message.reply("Sorry, I couldn't find a relevant diagram image.")
                     return
+
 
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
@@ -92,21 +112,4 @@ async def lazy_answer(client: Client, message: Message):
                 print(error)
     else:
         return
-
-def fetch_unsplash_image(query):
-    # Use the Unsplash API to fetch an image based on the query
-    lazy_users_message = message.text.lower().strip()
-    query = lazy_users_message
-    try:
-        response = requests.get(
-            f"https://api.unsplash.com/photos/random?query={query}",
-            headers={"Authorization": f"Client-ID {UNSPLASH_API_KEY}"}
-        )
-        data = response.json()
-        image_url = data.get("urls", {}).get("regular")
-        return image_url
-    except Exception as e:
-        print(f"Error fetching Unsplash image: {e}")
-        return None
-
 
