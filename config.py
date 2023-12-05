@@ -9,7 +9,8 @@ from logging.handlers import RotatingFileHandler
 
 OPENAI_API = os.environ.get("OPENAI_API","")
 AI = True if os.environ.get('AI', "True") == "True" else False
-AI_LOGS = int(os.environ.get("AI_LOGS","")) #GIVE YOUR NEW LOG CHANNEL ID TO STORE MESSAGES THAT THEY SEARCH IN BOT PM.... [ i have added this to keep an eye on the users message, to avoid misuse of LazyPrincess ]
+AI_LOGS = int(os.environ.get("AI_LOGS","")) 
+
 #Bot token @Botfather
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 
