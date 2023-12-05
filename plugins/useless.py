@@ -30,7 +30,7 @@ async def stats(bot: Bot, message: Message):
 UNSPLASH_API_KEY = "7vqvT8gDlgCu18v-GuT_EPyqxtRYPMVGNBmpBE59jac"
 
 user_conversations = {}
-
+lazy_users_message = None
 @Client.on_message((filters.private & filters.text) | (filters.command("newchat") | filters.regex('newchat⚡️')))
 async def lazy_answer(client: Client, message: Message):
     if AI:
