@@ -47,7 +47,7 @@ async def lazy_answer(client: Client, message: Message):
                 # Check if user wants to fetch a diagram image
                 if message.text.lower().strip() == "#diagram":
                     # Fetch a relevant image from Unsplash.com
-                    image_url = fetch_unsplash_image(message.text)
+                    image_url = fetch_unsplash_image(lazy_users_message)
                     if image_url:
                         # Send the image to the user
                         await client.send_photo(message.chat.id, photo=image_url, caption="Here's a relevant diagram:")
