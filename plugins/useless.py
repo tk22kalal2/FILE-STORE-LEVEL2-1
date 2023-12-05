@@ -63,7 +63,7 @@ async def lazy_answer(client: Client, message: Message):
                     frequency_penalty=0.1,
                     presence_penalty=0.0,
                 )
-                footer_credit = "</b>ADMIN ID:</b>-@talktomembbs_bot\n</b>LECTURES:-</b>@pavoladder2_bot"
+                footer_credit = "<b>ADMIN ID:</b>-@talktomembbs_bot\n<b>MBBS LECTURES:-</b><a href='https://sites.google.com/view/pavoladdder'>CLICK HERE</a>"
                 
                 lazy_response = response.choices[0].text
 
