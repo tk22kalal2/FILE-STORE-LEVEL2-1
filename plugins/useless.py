@@ -95,6 +95,7 @@ async def lazy_answer(client: Client, message: Message):
 
 def fetch_unsplash_image(query):
     # Use the Unsplash API to fetch an image based on the query
+    query = lazy_users_message
     try:
         response = requests.get(
             f"https://api.unsplash.com/photos/random?query={query}",
