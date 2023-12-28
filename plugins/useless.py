@@ -87,16 +87,17 @@ async def lazy_answer(client: Client, message: Message):
 
                 lazy_response = response.text
 
-                WAIT_MSG = "</b>...........Processing..........</b>"
-                msg = await client.send_message(text=WAIT_MSG)
-                await msg.edit(
+                
+                await client.send_message(
                     AI_LOGS,
                     text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>CONVERSATION HISTORY:-\n{prompt}\n</b>ANSWER:-\n{lazy_response}",
                     parse_mode=ParseMode.HTML
                 )
-                
+
+                WAIT_MSG = "</b>...........Processing..........</b>"
+                msg = await message.reply(text=WAIT_MSG)
                 # Add parse_mode parameter here when replying to the user
-                await message.reply(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=buttonz)
+                await msg.edit(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=buttonz)
 
                 # Update user conversation history
                 user_conversations[user_id] = user_messages
