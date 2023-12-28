@@ -95,7 +95,7 @@ async def lazy_answer(client: Client, message: Message):
                 )
 
                 WAIT_MSG = "</b>...........Processing..........</b>"
-                msg = await message.reply(text=WAIT_MSG)
+                msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
                 # Add parse_mode parameter here when replying to the user
                 await msg.edit(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=buttonz)
 
