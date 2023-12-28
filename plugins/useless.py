@@ -11,7 +11,7 @@ import openai
 import requests
 import google.generativeai as genai
 
-genai.configure(api_key="OPENAI_API")
+genai.configure(api_key="AIzaSyBjcQWATZfQ9vwytmlWEuLPrgvntdixuk0")
 
 buttonz = ReplyKeyboardMarkup(
     [
