@@ -72,7 +72,7 @@ async def lazy_answer(client: Client, message: Message):
 
                 response_text = response.text
                 # Bold text between "**"
-                response_text2 = response_text.replace("**", "<b>")  # Start bold
+                response_text2 = response_text.replace("**", "</b>")  # Start bold
                 response_text2 = response_text.replace("**", "</b>")  # End bold
                 
                 users = await full_userbase()
