@@ -20,6 +20,10 @@ buttonz = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+inline_button = InlineKeyboardMarkup(
+    [[InlineKeyboardButton("MEDICAL LECTURES", url="https://sites.google.com/view/pavoladder")]]
+)
+
 @Bot.on_message(filters.command('stats') & filters.user(ADMINS))
 async def stats(bot: Bot, message: Message):
     now = datetime.now()
@@ -97,7 +101,7 @@ async def lazy_answer(client: Client, message: Message):
                 WAIT_MSG = """"<b>Processing ...</b>"""
                 msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
                 # Add parse_mode parameter here when replying to the user
-                await msg.edit(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=buttonz)
+                await msg.edit(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=inline_button if msg.chat.type == "private" else buttonz)
 
                 # Update user conversation history
                 user_conversations[user_id] = user_messages
