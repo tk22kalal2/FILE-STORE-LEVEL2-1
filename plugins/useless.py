@@ -60,7 +60,7 @@ async def lazy_answer(client: Client, message: Message):
                     "temperature": 1,
                     "top_p": 1,
                     "top_k": 1,
-                    "max_output_tokens": 1000,
+                    "max_output_tokens": 2048,
                 }
                 
                 model = genai.GenerativeModel(model_name="gemini-pro",
