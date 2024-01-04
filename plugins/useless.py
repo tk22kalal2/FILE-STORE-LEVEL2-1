@@ -21,7 +21,7 @@ buttonz = ReplyKeyboardMarkup(
 )
 
 inline_button = InlineKeyboardMarkup(
-    [[InlineKeyboardButton("MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")]]
+    [[InlineKeyboardButton("🩺 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")]]
 )
 
 @Bot.on_message(filters.command('stats') & filters.user(ADMINS))
