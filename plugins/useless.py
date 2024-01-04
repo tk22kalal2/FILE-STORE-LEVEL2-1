@@ -57,10 +57,10 @@ async def lazy_answer(client: Client, message: Message):
 
                 # Set up the model
                 generation_config = {
-                    "temperature": 0.9,
+                    "temperature": 1,
                     "top_p": 1,
                     "top_k": 1,
-                    "max_output_tokens": 2048,
+                    "max_output_tokens": 1500,
                 }
 
                 safety_settings = [
@@ -90,7 +90,7 @@ async def lazy_answer(client: Client, message: Message):
                 response = model.generate_content(prompt_parts)
 
                 users = await full_userbase()
-                footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>MBBS LECTURES:</b> - <a href='https://sites.google.com/view/pavoladdder'>CLICK HERE</a>\n<b>Total Users:</b> {}".format(len(users))
+                footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
     
                 lazy_response = f"<code>{response.text}</code>"
 
