@@ -78,7 +78,7 @@ async def lazy_answer(client: Client, message: Message):
                 users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
     
-                lazy_response = f"<code>{response_text}</code>"
+                lazy_response = response_text
            
                 await client.send_message(
                     AI_LOGS,
