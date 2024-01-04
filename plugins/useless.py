@@ -24,9 +24,7 @@ buttonz = ReplyKeyboardMarkup(
 inline_button = InlineKeyboardMarkup(
     [[InlineKeyboardButton("🩺 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")]]
 )
-
-async def get_users(client: Bot, message: Message):
-    users = await full_userbase()
+    
     
 @Bot.on_message(filters.command('stats') & filters.user(ADMINS))
 async def stats(bot: Bot, message: Message):
@@ -91,6 +89,7 @@ async def lazy_answer(client: Client, message: Message):
 
                 response = model.generate_content(prompt_parts)
 
+                users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>MBBS LECTURES:</b> - <a href='https://sites.google.com/view/pavoladdder'>CLICK HERE</a>\n<b>Total Users:</b> {}".format(len(users))
     
                 lazy_response = f"<code>{response.text}</code>"
