@@ -69,16 +69,11 @@ async def lazy_answer(client: Client, message: Message):
                 prompt_parts = [prompt]
 
                 response = model.generate_content(prompt_parts)
-
-                response_text = response.text
-                # Bold text between "**"
-                response_text2 = response_text.replace("**", "</b>")  # Start bold
-                response_text2 = response_text.replace("**", "</b>")  # End bold
                 
                 users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
     
-                lazy_response = response_text2
+                lazy_response = response.text
            
                 await client.send_message(
                     AI_LOGS,
