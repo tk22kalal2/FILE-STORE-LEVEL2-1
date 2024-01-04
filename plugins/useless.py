@@ -89,7 +89,7 @@ async def lazy_answer(client: Client, message: Message):
 
                 footer_credit = "<b>ADMIN ID:</b>-@talktomembbs_bot\n<b>MBBS LECTURES:-</b><a href='https://sites.google.com/view/pavoladdder'>CLICK HERE</a>"
 
-                lazy_response = response.text
+                lazy_response = f"<code>{response.text}</code>"
 
                 
                 await client.send_message(
