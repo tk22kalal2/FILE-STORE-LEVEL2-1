@@ -33,62 +33,38 @@ async def stats(bot: Bot, message: Message):
     time = get_readable_time(delta.seconds)
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
+# Dictionary to store user/admin conversations
 user_conversations = {}
 
-@Client.on_message((filters.private & filters.text) | (filters.command("newchat") | filters.regex('newchat⚡️')))
-async def lazy_answer(client: Client, message: Message):
-    if AI:
-        user_id = message.from_user.id
-        if user_id:
-            try:
-                # Check if user wants to start a new chat
-                if message.text.lower().strip() == "/newchat" or message.text.strip() == 'newchat⚡️':
-                    user_conversations.pop(user_id, None)  # Remove user's conversation history
-                    response_text = "New chat started. Ask me anything!"
-                    await message.reply(response_text)
-                    return
+@Bot.on_message(filters.private & filters.incoming)
+async def forward_to_admin(client: Bot, m: Message):
+    # Check if the message is from a private chat
+    if m.chat.type == "private":
+        # Check if user is already in a conversation
+        if m.from_user.id in user_conversations:
+            admin_id = user_conversations[m.from_user.id]
+            await client.send_message(admin_id, f"User ID: {m.from_user.id}\nMessage: {m.text}")
 
-                # Get the user's previous messages
-                user_messages = user_conversations.get(user_id, [])
-                user_messages.append(message.text)
+            # Optionally, you can send a confirmation message to the user
+            await m.reply_text("Your message has been forwarded to the admin.")
+        else:
+            await m.reply_text("You are not currently in a conversation with an admin.")
 
-                # Use the user's messages as a prompt
-                prompt = "\n".join(user_messages)
+@Bot.on_message(filters.private & filters.outgoing)
+async def forward_reply_to_user(client: Bot, m: Message):
+    # Check if the reply is from an admin
+    if m.from_user.id in ADMINS:
+        # Check if the reply is part of a conversation
+        if m.reply_to_message:
+            user_id = m.reply_to_message.from_user.id
 
-                # Set up the model
-                generation_config = {
-                    "temperature": 1,
-                    "top_p": 1,
-                    "top_k": 1,
-                    "max_output_tokens": 2048,
-                }
-                
-                model = genai.GenerativeModel(model_name="gemini-pro",
-                                              generation_config=generation_config,
-                                              )
-                prompt_parts = [prompt]
+            # Store the admin ID in the user_conversations dictionary
+            user_conversations[user_id] = m.from_user.id
 
-                response = model.generate_content(prompt_parts)
-                
-                users = await full_userbase()
-                footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
-    
-                lazy_response = response.text
-           
-                await client.send_message(
-                    AI_LOGS,
-                    text=f"<b>Name - {message.from_user.mention}\n{user_id}\n</b>CONVERSATION HISTORY:-\n{prompt}\n</b>ANSWER:-\n{lazy_response}",
-                    parse_mode=ParseMode.HTML
-                )
+            # Forward the admin's reply to the user
+            await client.send_message(user_id, f"Admin reply: {m.text}")
 
-                WAIT_MSG = """"<b>Processing ...</b>"""
-                msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
-                # Add parse_mode parameter here when replying to the user
-                await msg.edit(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=inline_button)
-
-                # Update user conversation history
-                user_conversations[user_id] = user_messages
-            except Exception as error:
-                print(error)
-    else:
-        return
+            # Optionally, you can send a confirmation message to the admin
+            await m.reply_text("Your reply has been sent to the user.")
+        else:
+            await m.reply_text("You can only reply to user messages within the bot.")
