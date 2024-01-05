@@ -91,7 +91,7 @@ async def lazy_answer(client: Client, message: Message):
                     parse_mode=ParseMode.HTML
                 )
 
-                await client.send_message(f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=inline_button)
+                await client.send_message(text=f"{lazy_response}\n{footer_credit}", parse_mode=ParseMode.HTML, reply_markup=inline_button)
 
                 # Update user conversation history
                 user_conversations[user_id] = user_messages
