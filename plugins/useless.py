@@ -25,8 +25,8 @@ inline_button = InlineKeyboardMarkup(
     [[InlineKeyboardButton("🩺 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")]]
 )
 
-@Bot.on_message(filters.command('clear_history') & filters.user(ADMINS))
-async def clear_history(bot: Bot, message: Message):
+@Bot.on_message(filters.command('clear') & filters.user(ADMINS))
+async def clear(bot: Bot, message: Message):
     chat_id = message.chat.id
 
     # Iterate over the last 100 messages sent by the bot in the chat and delete them
