@@ -24,7 +24,17 @@ buttonz = ReplyKeyboardMarkup(
 inline_button = InlineKeyboardMarkup(
     [[InlineKeyboardButton("🩺 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")]]
 )
-    
+
+@Bot.on_message(filters.command('clear_history') & filters.user(ADMINS))
+async def clear_history(bot: Bot, message: Message):
+    chat_id = message.chat.id
+
+    # Iterate over the last 100 messages sent by the bot in the chat and delete them
+    async for msg in bot.search_messages(chat_id, limit=100):
+        if msg.from_user.is_bot and msg.message_id != message.message_id:
+            await msg.delete()
+
+    await message.reply("Bot message history cleared.")
     
 @Bot.on_message(filters.command('stats') & filters.user(ADMINS))
 async def stats(bot: Bot, message: Message):
