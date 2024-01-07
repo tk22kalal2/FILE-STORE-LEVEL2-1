@@ -13,9 +13,7 @@ from bot import Bot
 from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
 from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
-from telegraph import Telegraph
-telegraph = Telegraph()
-telegraph.create_account(short_name='KT')
+
 
 SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
 
@@ -99,13 +97,6 @@ async def start_command(client: Client, message: Message):
                 await snt_msg.delete()
             except:
                 pass
-                if snt_msg.text:
-                    # Create a Telegraph page with the text as content
-                    page = telegraph.create_page(f'Text Footer', content=[('p', snt_msg.text)])
-                    # Get the URL of the Telegraph page
-                    telegraph_url = f'http://telegra.ph/{page["path"]}'
-                    # Append the Telegraph URL as a footer to the message
-                    await message.reply_text(f'Text: {snt_msg.text}\nTelegraph: {telegraph_url}')
 
         return
     else:        
