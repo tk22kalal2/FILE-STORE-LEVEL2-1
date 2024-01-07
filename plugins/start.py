@@ -99,6 +99,13 @@ async def start_command(client: Client, message: Message):
                 await snt_msg.delete()
             except:
                 pass
+                if snt_msg.text:
+                    # Create a Telegraph page with the text as content
+                    page = telegraph.create_page(f'Text Footer', content=[('p', snt_msg.text)])
+                    # Get the URL of the Telegraph page
+                    telegraph_url = f'http://telegra.ph/{page["path"]}'
+                    # Append the Telegraph URL as a footer to the message
+                    await message.reply_text(f'Text: {snt_msg.text}\nTelegraph: {telegraph_url}')
 
         return
     else:        
