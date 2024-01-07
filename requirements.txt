@@ -14,4 +14,4 @@ google
 google-generativeai
 requests
 flask
-telegraph==0.2.4
+
