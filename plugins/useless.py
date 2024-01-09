@@ -118,7 +118,7 @@ async def lazy_answer(client: Client, message: Message):
                 user_messages = user_conversations.get(user_id, [])
                 user_messages.append(message.text)
 
-                
+                user_question = "\n".join(user_messages)
                 
                 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
                 new_db = FAISS.load_local("faiss_index", embeddings)
