@@ -3,7 +3,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import Bot
-from config import ADMINS, CB_CHANNEL
+from config import ADMINS, DB_CHANNEL
 from helper_func import encode, get_message_id
 from helper_func import subscribed, encode, decode, get_messages
 
@@ -102,7 +102,7 @@ async def batch(client: Client, message: Message):
         # Forward messages to the new channel ("CB_CHANNEL")
         for msg in messages:
             try:
-                await msg.copy(chat_id="CB_CHANNEL")
+                await msg.copy(chat_id="DB_CHANNEL")
             except Exception as e:
                 print(f"Error forwarding message: {e}")
                 await message.reply_text("Error forwarding messages to CB_CHANNEL")
