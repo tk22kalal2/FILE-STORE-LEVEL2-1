@@ -54,11 +54,23 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
-
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+
+    # Print the absolute path where the index will be saved
+    print("Saving Faiss index to:", os.path.abspath("faiss_index/index.faiss"))
+    
     vector_store.save_local("faiss_index")
+
+    # Print the absolute path where the index will be loaded from
+    print("Loading Faiss index from:", os.path.abspath("faiss_index/index.faiss"))
+    
+    loaded_vector_store = FAISS.load_local("faiss_index", embeddings)
+
+    return loaded_vector_store
+
+
 
 def get_conversational_chain():
 
