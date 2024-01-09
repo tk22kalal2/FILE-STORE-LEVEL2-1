@@ -135,10 +135,11 @@ async def lazy_answer(client: Client, message: Message):
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
                 user_messages.append(message.text)            
-
+                
+                embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+                new_db = FAISS.load_local("faiss_index", embeddings)
+                docs = new_db.similarity_search(user_question)
                 chain = get_conversational_chain()
-
-                user_question = "\n".join(user_messages)
 
                 response = chain(
                     {"input_documents":docs, "question": user_question}
