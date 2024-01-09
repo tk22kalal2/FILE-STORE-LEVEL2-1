@@ -3,7 +3,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import Bot
-from config import ADMINS
+from config import ADMINS, CB_CHANNEL
 from helper_func import encode, get_message_id
 
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch'))
@@ -55,14 +55,58 @@ async def batch(client: Client, message: Message):
     # Generate a list of links for each message between the first and second message
     message_links = []
     for msg_id in range(min(f_msg_id, s_msg_id), max(f_msg_id, s_msg_id) + 1):
-        string = f"get-{msg_id * abs(client.db_channel.id)}"
+        string = f"get-{msg_id * abs(client.db_channel)}"
         base64_string = await encode(string)
         link = f"https://t.me/{client.username}?start={base64_string}"
         message_links.append(link)
 
-    # Send the generated links to the user
     for link in message_links:
-        await message.reply(f"Here is a link for one of the messages:\n{link}")      
+        try:
+            base64_string = link.split("=", 1)[1]
+            decoded_string = await decode(base64_string)
+        except Exception as e:
+            print(f"Error decoding link: {e}")
+            return
+
+        argument = decoded_string.split("-")
+        if len(argument) == 3:
+            try:
+                start = int(int(argument[1]) / abs(client.db_channel))
+                end = int(int(argument[2]) / abs(client.db_channel))
+            except:
+                return
+            if start <= end:
+                ids = range(start, end + 1)
+            else:
+                ids = []
+                i = start
+                while True:
+                    ids.append(i)
+                    i -= 1
+                    if i < end:
+                        break
+        elif len(argument) == 2:
+            try:
+                ids = [int(int(argument[1]) / abs(client.db_channel))]
+            except:
+                return
+
+        try:
+            messages = await get_messages(client, ids)
+        except Exception as e:
+            print(f"Error fetching messages: {e}")
+            await message.reply_text("Something went wrong..!")
+            return
+
+        # Forward messages to the new channel ("CB_CHANNEL")
+        for msg in messages:
+            try:
+                await client.forward_messages(chat_id="CB_CHANNEL", messages=msg)
+            except Exception as e:
+                print(f"Error forwarding message: {e}")
+                await message.reply_text("Error forwarding messages to CB_CHANNEL")
+                return
+
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
 async def link_generator(client: Client, message: Message):
