@@ -55,7 +55,7 @@ async def batch(client: Client, message: Message):
     # Generate a list of links for each message between the first and second message
     message_links = []
     for msg_id in range(min(f_msg_id, s_msg_id), max(f_msg_id, s_msg_id) + 1):
-        string = f"get-{msg_id * abs(client.db_channel)}"
+        string = f"get-{msg_id * abs(client.db_channel.id)}"
         base64_string = await encode(string)
         link = f"https://t.me/{client.username}?start={base64_string}"
         message_links.append(link)
@@ -71,8 +71,8 @@ async def batch(client: Client, message: Message):
         argument = decoded_string.split("-")
         if len(argument) == 3:
             try:
-                start = int(int(argument[1]) / abs(client.db_channel))
-                end = int(int(argument[2]) / abs(client.db_channel))
+                start = int(int(argument[1]) / abs(client.db_channel.id))
+                end = int(int(argument[2]) / abs(client.db_channel.id))
             except:
                 return
             if start <= end:
@@ -87,7 +87,7 @@ async def batch(client: Client, message: Message):
                         break
         elif len(argument) == 2:
             try:
-                ids = [int(int(argument[1]) / abs(client.db_channel))]
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
             except:
                 return
 
