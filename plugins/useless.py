@@ -7,7 +7,6 @@ from datetime import datetime
 from helper_func import get_readable_time
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup
 from pyrogram import Client, filters
-import openai
 import requests
 import google.generativeai as genai
 from database.database import full_userbase
