@@ -15,3 +15,10 @@ google-generativeai
 requests
 flask
 telegraph
+streamlit
+google-generativeai
+python-dotenv
+langchain
+PyPDF2
+chromadb
+faiss-cpu
