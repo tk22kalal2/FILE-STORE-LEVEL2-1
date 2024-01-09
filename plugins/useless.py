@@ -73,6 +73,35 @@ def get_vector_store(text_chunks):
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
+def get_conversational_chain():
+
+    prompt_template = """
+    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
+    provided context just say, "answer is not available in the context", don't provide the wrong answer\n\n
+    Context:\n {context}?\n
+    Question: \n{question}\n
+
+    Answer:
+    """
+
+    model = ChatGoogleGenerativeAI(model="gemini-pro",
+                             temperature=0.3)
+
+    prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
+    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
+
+    return chain
+
+
+
+def user_input(user_question):
+    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+    
+    new_db = FAISS.load_local("faiss_index", embeddings)
+    docs = new_db.similarity_search(user_question)
+
+    chain = get_conversational_chain()
+
 
 # Global variables for storing user conversations
 user_conversations = {}
@@ -100,34 +129,12 @@ async def lazy_answer(client: Client, message: Message):
 
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
-                user_messages.append(message.text)
+                user_messages.append(message.text)                                              
 
-                # Use the user's messages as a prompt
-                prompt = "\n".join(user_messages)
-
-                # Set up the model
-                generation_config = {
-                    "temperature": 1,
-                    "top_p": 1,
-                    "top_k": 1,
-                    "max_output_tokens": 1000,
-                }
-
-                safety_settings = [
-                    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
-                    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
-                    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
-                    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
-                ]
-
-                model = genai.GenerativeModel(
-                    model_name="gemini-pro",
-                    generation_config=generation_config,
-                    safety_settings=safety_settings
-                )
-                prompt_parts = [prompt]
-
-                response = model.generate_content(prompt_parts)
+                response = chain(
+                    {"input_documents":docs, "question": user_question}
+                    , return_only_outputs=True)
+                print(response)    
 
                 users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
