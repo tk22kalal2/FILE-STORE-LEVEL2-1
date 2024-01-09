@@ -77,7 +77,7 @@ def get_vector_store(text_chunks):
 # Global variables for storing user conversations
 user_conversations = {}
 
-@Client.on_message((Filters.private & Filters.text) | (Filters.command("newchat") | Filters.regex('newchat⚡️')))
+@Client.on_message((filters.private & filters.text) | (filters.command("newchat") | filters.regex('newchat⚡️')))
 async def lazy_answer(client: Client, message: Message):
     if AI:
         user_id = message.from_user.id
