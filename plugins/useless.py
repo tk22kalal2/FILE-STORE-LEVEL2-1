@@ -11,7 +11,19 @@ import openai
 import requests
 import google.generativeai as genai
 from database.database import full_userbase
+import streamlit as st
+from PyPDF2 import PdfReader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import os
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+import google.generativeai as genai
+from langchain.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain.prompts import PromptTemplate
+from dotenv import load_dotenv
 
+load_dotenv()
 genai.configure(api_key="AIzaSyBjcQWATZfQ9vwytmlWEuLPrgvntdixuk0")
 
 buttonz = ReplyKeyboardMarkup(
@@ -43,10 +55,13 @@ async def stats(bot: Bot, message: Message):
     time = get_readable_time(delta.seconds)
     await message.reply(BOT_STATS_TEXT.format(uptime=time))
 
-# Dictionary to store user/admin conversations
+
+
+
+# Global variables for storing user conversations
 user_conversations = {}
 
-@Client.on_message((filters.private & filters.text) | (filters.command("newchat") | filters.regex('newchat⚡️')))
+@Client.on_message((Filters.private & Filters.text) | (Filters.command("newchat") | Filters.regex('newchat⚡️')))
 async def lazy_answer(client: Client, message: Message):
     if AI:
         user_id = message.from_user.id
@@ -58,6 +73,14 @@ async def lazy_answer(client: Client, message: Message):
                     response_text = "New chat started. Ask me anything!"
                     await message.reply(response_text)
                     return
+
+                # If the user uploads a PDF
+                if message.document:
+                    pdf_file = await message.document.download()
+                    raw_text = get_pdf_text([pdf_file])
+                    text_chunks = get_text_chunks(raw_text)
+                    get_vector_store(text_chunks)
+                    user_input(raw_text)  # Pass the raw text to the user_input function
 
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
@@ -109,3 +132,4 @@ async def lazy_answer(client: Client, message: Message):
                 print(error)
     else:
         return
+
