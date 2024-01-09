@@ -129,7 +129,9 @@ async def lazy_answer(client: Client, message: Message):
 
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
-                user_messages.append(message.text)                                              
+                user_messages.append(message.text)            
+
+                chain = get_conversational_chain()
 
                 response = chain(
                     {"input_documents":docs, "question": user_question}
