@@ -39,24 +39,6 @@ inline_button = InlineKeyboardMarkup(
     [[InlineKeyboardButton("🩺 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")]]
 )
 
-@Bot.on_message(filters.command('clear') & filters.user(ADMINS))
-async def clear(bot: Bot, message: Message):
-    chat_id = message.chat.id
-
-    # Iterate over the last 100 messages sent by the bot in the chat and delete them
-    async for msg in bot.search_messages(chat_id, limit=100):
-        if msg.from_user.is_bot and msg.message_id != message.message_id:
-            await msg.delete()
-
-    await message.reply("Bot message history cleared.")
-    
-@Bot.on_message(filters.command('stats') & filters.user(ADMINS))
-async def stats(bot: Bot, message: Message):
-    now = datetime.now()
-    delta = now - bot.uptime
-    time = get_readable_time(delta.seconds)
-    await message.reply(BOT_STATS_TEXT.format(uptime=time))
-
 def get_pdf_text(pdf_docs):
     text=""
     for pdf in pdf_docs:
@@ -126,15 +108,17 @@ async def lazy_answer(client: Client, message: Message):
 
                 # If the user uploads a PDF
                 if message.document:
-                    pdf_file = await message.document.download()
-                    raw_text = get_pdf_text([pdf_file])
+                    pdf_docs = await message.document.download()
+                    raw_text = get_pdf_text([pdf_docs])
                     text_chunks = get_text_chunks(raw_text)
                     get_vector_store(text_chunks)
-                    user_input(raw_text)  # Pass the raw text to the user_input function
+                    
 
                 # Get the user's previous messages
                 user_messages = user_conversations.get(user_id, [])
-                user_messages.append(message.text)            
+                user_messages.append(message.text)
+
+                
                 
                 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
                 new_db = FAISS.load_local("faiss_index", embeddings)
