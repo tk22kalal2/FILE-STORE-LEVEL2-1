@@ -20,6 +20,11 @@ from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
+from dotenv import load_dotenv
+
+load_dotenv()
+os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 genai.configure(api_key="AIzaSyBjcQWATZfQ9vwytmlWEuLPrgvntdixuk0")
 
@@ -132,6 +137,8 @@ async def lazy_answer(client: Client, message: Message):
                 user_messages.append(message.text)            
 
                 chain = get_conversational_chain()
+
+                user_question = "\n".join(user_messages)
 
                 response = chain(
                     {"input_documents":docs, "question": user_question}
