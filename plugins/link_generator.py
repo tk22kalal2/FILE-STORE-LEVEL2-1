@@ -102,7 +102,7 @@ async def batch(client: Client, message: Message):
         # Forward messages to the new channel ("CB_CHANNEL")
         for msg in messages:
             try:
-                await client.send_message(chat_id="CB_CHANNEL", messages=msg)
+                await client.send_message(chat_id="CB_CHANNEL")
             except Exception as e:
                 print(f"Error forwarding message: {e}")
                 await message.reply_text("Error forwarding messages to CB_CHANNEL")
