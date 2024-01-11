@@ -83,7 +83,7 @@ def get_conversational_chain():
 
 
 
-def user_input(user_question):
+def user_input(user_question, vector_store, chain):
     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
     docs = vector_store.get_relevant_documents(question)    
     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
