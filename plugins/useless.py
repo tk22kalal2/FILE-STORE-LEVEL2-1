@@ -122,13 +122,10 @@ async def lazy_answer(client: Client, message: Message):
                 user_question = "\n".join(user_messages)
                 
                 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+                docs = vector_store.get_relevant_documents(question)    
+                response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+                return response.text
                 
-                chain = get_conversational_chain()
-
-                if vector_store is not None:
-                    docs = vector_store.get_relevant_documents(user_question)
-                    response = user_input(user_question, vector_store, chain)                
-
                 users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
 
