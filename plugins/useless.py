@@ -85,7 +85,7 @@ def get_conversational_chain():
 
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-    docs = vector_store.get_relevant_documents(question)    
+    docs = get_vector_store.get_relevant_documents(question)    
     chain = get_conversational_chain()
 
 
@@ -120,7 +120,7 @@ async def lazy_answer(client: Client, message: Message):
                 user_question = "\n".join(user_messages)
                 
                 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-                docs = vector_store.get_relevant_documents(question)
+                docs = get_vector_store.get_relevant_documents(question)
                 chain = get_conversational_chain()
 
                 response = chain(
