@@ -85,8 +85,9 @@ def get_conversational_chain():
 
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-    docs = get_vector_store.get_relevant_documents(question)    
-    chain = get_conversational_chain()
+    docs = vector_store.get_relevant_documents(question)    
+    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+    return response.text
 
 
 # Global variables for storing user conversations
@@ -110,7 +111,7 @@ async def lazy_answer(client: Client, message: Message):
                     pdf_docs = await message.document.download()
                     raw_text = get_pdf_text([pdf_docs])
                     text_chunks = get_text_chunks(raw_text)
-                    get_vector_store(text_chunks)
+                    vector_store = get_vector_store(text_chunks)
                     
 
                 # Get the user's previous messages
@@ -120,13 +121,10 @@ async def lazy_answer(client: Client, message: Message):
                 user_question = "\n".join(user_messages)
                 
                 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-                docs = get_vector_store.get_relevant_documents(question)
+                
                 chain = get_conversational_chain()
 
-                response = chain(
-                    {"input_documents":docs, "question": user_question}
-                    , return_only_outputs=True)
-                print(response)    
+                response_text = user_input(user_question, vector_store, chain)    
 
                 users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
