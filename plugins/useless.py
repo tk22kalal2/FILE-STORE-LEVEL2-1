@@ -20,6 +20,7 @@ from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
+from langchain.vectorstores import Chroma
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,19 +57,8 @@ def get_text_chunks(text):
 
 def get_vector_store(text_chunks):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-
-    # Print the absolute path where the index will be saved
-    print("Saving Faiss index to:", os.path.abspath("faiss_index/index.faiss"))
-    
-    vector_store.save_local("faiss_index")
-
-    # Print the absolute path where the index will be loaded from
-    print("Loading Faiss index from:", os.path.abspath("faiss_index/index.faiss"))
-    
-    loaded_vector_store = FAISS.load_local("faiss_index", embeddings)
-
-    return loaded_vector_store
+    vector_index = Chroma.from_texts(texts, embeddings).as_retriever()
+    return vector_index
 
 
 
@@ -95,10 +85,7 @@ def get_conversational_chain():
 
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-    
-    new_db = FAISS.load_local("faiss_index", embeddings)
-    docs = new_db.similarity_search(user_question)
-
+    docs = vector_store.get_relevant_documents(question)    
     chain = get_conversational_chain()
 
 
@@ -133,8 +120,7 @@ async def lazy_answer(client: Client, message: Message):
                 user_question = "\n".join(user_messages)
                 
                 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-                new_db = FAISS.load_local("faiss_index", embeddings)
-                docs = new_db.similarity_search(user_question)
+                docs = vector_store.get_relevant_documents(question)
                 chain = get_conversational_chain()
 
                 response = chain(
