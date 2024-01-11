@@ -92,9 +92,10 @@ def user_input(user_question):
 
 # Global variables for storing user conversations
 user_conversations = {}
-
+vector_store = None
 @Client.on_message((filters.private & filters.text) | (filters.command("newchat") | filters.regex('newchat⚡️')))
 async def lazy_answer(client: Client, message: Message):
+    global vector_store
     if AI:
         user_id = message.from_user.id
         if user_id:
