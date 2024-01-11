@@ -127,7 +127,7 @@ async def lazy_answer(client: Client, message: Message):
 
                 if vector_store is not None:
                     docs = vector_store.get_relevant_documents(user_question)
-                    response_text = user_input(user_question, vector_store, chain)                
+                    response = user_input(user_question, vector_store, chain)                
 
                 users = await full_userbase()
                 footer_credit = "<b>ADMIN ID:</b> - @talktomembbs_bot\n<b>Total Users:</b> {}".format(len(users))
