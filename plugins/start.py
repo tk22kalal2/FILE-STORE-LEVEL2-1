@@ -100,13 +100,12 @@ async def start_command(client: Client, message: Message):
 
         return
     else:        
-        reply_markup = {
-            'inline_keyboard': [
-                [
-                    {'text': '🔗 MEDICAL LECTURES', 'web_app': {'url': 'https://t.me/FileXtera2_bot?start=Z2V0LTczNTQ4Mzg1MTg5MTkyMg'}}
-                ]
+        reply_markup = InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("🔗 MEDICAL LECTURES", url="https://t.me/FileXtera2_bot?start=Z2V0LTczNTQ4Mzg1MTg5MTkyMg")],
+                [InlineKeyboardButton("😊 About Me", callback_data="about"), InlineKeyboardButton("🔒 Close", callback_data="close")],
             ]
-        }        
+        )
         await message.reply_text(
             text=START_MSG.format(
                 first=message.from_user.first_name,
