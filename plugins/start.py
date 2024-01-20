@@ -100,12 +100,7 @@ async def start_command(client: Client, message: Message):
 
         return
     else:        
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("🔗 MEDICAL LECTURES", switch_inline_query="https://sites.google.com/view/pavoladdder")],
-                [InlineKeyboardButton("😊 About Me", callback_data="about"), InlineKeyboardButton("🔒 Close", callback_data="close")],
-            ]
-        )
+        reply_markup = InlineKeyboardMarkup("🔗 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")            
         
         await message.reply_text(
             text=START_MSG.format(
