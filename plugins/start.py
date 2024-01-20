@@ -100,7 +100,11 @@ async def start_command(client: Client, message: Message):
 
         return
     else:        
-        reply_markup = InlineKeyboardMarkup("🔗 MEDICAL LECTURES", url="https://sites.google.com/view/pavoladdder")            
+        reply_markup = InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("🔗 MEDICAL LECTURES", url="https://t.me/FileXtera2_bot?start=Z2V0LTczNTQ4Mzg1MTg5MTkyMg")],                
+            ]
+        )            
         
         await message.reply_text(
             text=START_MSG.format(
