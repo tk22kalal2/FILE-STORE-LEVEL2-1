@@ -9,7 +9,7 @@ from helper_func import encode, get_message_id, decode, get_messages
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram.errors import FloodWait
-from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
+from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, FCHANNEL_ID
 
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch'))
 async def batch(client: Client, message: Message):
@@ -122,7 +122,7 @@ async def batch(client: Client, message: Message):
                 snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
                               protect_content=PROTECT_CONTENT)
                 try:
-                    await snt_msg.forward(chat_id='6531497488')
+                    await snt_msg.forward(chat_id='FCHANNEL_ID')
                     await asyncio.sleep(1)
                     snt_msgs.append(snt_msg)
                 except FloodWait as e:
