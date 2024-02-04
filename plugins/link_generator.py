@@ -122,7 +122,7 @@ async def batch(client: Client, message: Message):
                 snt_msg = await msg.copy(chat_id=FCHANNEL_ID, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
                               protect_content=PROTECT_CONTENT)
                 try:                   
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(5)
                     snt_msgs.append(snt_msg)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
