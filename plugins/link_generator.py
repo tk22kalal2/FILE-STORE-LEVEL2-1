@@ -108,30 +108,32 @@ async def batch(client: Client, message: Message):
 
         for msg in messages:
 
-            if bool(CUSTOM_CAPTION) & bool(msg.document):
-                caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
-            else:
-                caption = "" if not msg.caption else msg.caption.html
+            if msg.video:
+                # Forward only if it's a video
+                if bool(CUSTOM_CAPTION) & bool(msg.document):
+                    caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
+                else:
+                    caption = "" if not msg.caption else msg.caption.html
 
-            if DISABLE_CHANNEL_BUTTON:
-                reply_markup = msg.reply_markup
-            else:
-                reply_markup = None
+                if DISABLE_CHANNEL_BUTTON:
+                    reply_markup = msg.reply_markup
+                else:
+                    reply_markup = None
 
-            try:
-                snt_msg = await msg.copy(chat_id=FCHANNEL_ID, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup)
-                try:                   
-                    await asyncio.sleep(3)
-                    snt_msgs.append(snt_msg)
-                except FloodWait as e:
-                    await asyncio.sleep(e.x)
-                    snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                  protect_content=PROTECT_CONTENT)
-                    snt_msgs.append(snt_msg)
+                try:
+                    snt_msg = await msg.copy(chat_id=FCHANNEL_ID, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup)
+                    try:
+                        await asyncio.sleep(3)
+                        snt_msgs.append(snt_msg)
+                    except FloodWait as e:
+                        await asyncio.sleep(e.x)
+                        snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
+                                      protect_content=PROTECT_CONTENT)
+                        snt_msgs.append(snt_msg)
+                    except Exception as e:
+                        print(f"Error forwarding message: {e}")
                 except Exception as e:
-                    print(f"Error forwarding message: {e}")
-            except Exception as e:
-                print(f"Error copying message: {e}")
+                    print(f"Error copying message: {e}")
 
       
     
