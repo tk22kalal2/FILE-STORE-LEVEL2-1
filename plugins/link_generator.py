@@ -11,7 +11,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, 
 from pyrogram.errors import FloodWait
 from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, FCHANNEL_ID
 
-@Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch') & filters.video)
+@Bot.on_message(filters.private & filters.command('batch') & filters.video)
 async def batch(client: Client, message: Message):
     while True:
         try:
