@@ -119,8 +119,7 @@ async def batch(client: Client, message: Message):
                 reply_markup = None
 
             try:
-                snt_msg = await msg.copy(chat_id=FCHANNEL_ID, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                              protect_content=PROTECT_CONTENT)
+                snt_msg = await msg.copy(chat_id=FCHANNEL_ID, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup)
                 try:                   
                     await asyncio.sleep(5)
                     snt_msgs.append(snt_msg)
