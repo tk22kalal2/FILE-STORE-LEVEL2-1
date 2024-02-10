@@ -167,86 +167,33 @@ async def not_joined(client: Client, message: Message):
     )
 
 
-
-import asyncio
-from pyrogram import Client, filters
-from pyrogram.types import Message
-from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
-
 from config import ADMINS, CHANNEL_ID
 
-WAIT_MSG = "Please wait..."
-REPLY_ERROR = "Please reply to a message to broadcast."
 
 
-import asyncio
-from pyrogram import Client, filters
-from pyrogram.types import Message
-from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
-from config import ADMINS, CHANNEL_ID
-from database.database import add_user, del_user, full_userbase, present_user
-
-async def get_users(client: Client, message: Message):
+# Fetch users from channel and add them to the user database
+async def fetch_and_add_users():
     try:
-        chat_info = await client.get_chat(chat_id=CHANNEL_ID)
-        member_count = chat_info.members_count
-        id = message.from_user.id
-        if not await present_user(id):
-            try:
-                await add_user(id, CHANNEL_ID)
-            except:
-                pass
-        await message.reply(f"Total {member_count} users are in the channel.")
+        async for member in Bot.iter_chat_members(CHANNEL_ID):
+            # Add the user ID to the database
+            await add_user(member.user.id)
     except Exception as e:
-        await message.reply(f"Error: {str(e)}")
+        print(f"Error fetching or adding users: {e}")
 
-@Client.on_message(filters.private & filters.command('broadcast') & filters.user(ADMINS))
-async def send_text(client: Client, message: Message):
-    response = None  # Initialize response with a default value
-    if message.reply_to_message:
-        query = await full_userbase()
-        broadcast_msg = message.reply_to_message
-        total = 0
-        successful = 0
-        blocked = 0
-        deleted = 0
-        unsuccessful = 0
-        
-        pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
-        for chat_id in query:
-            try:
-                await broadcast_msg.copy(chat_id)
-                successful += 1
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                await broadcast_msg.copy(chat_id)
-                successful += 1
-            except UserIsBlocked:
-                await del_user(chat_id)
-                blocked += 1
-            except InputUserDeactivated:
-                await del_user(chat_id)
-                deleted += 1
-            except:
-                unsuccessful += 1
-                pass
-            total += 1
-        
-        response = f"""<b><u>Broadcast Completed</u>
+# Command to trigger fetching and adding users from the channel to the database
+@Bot.on_message(filters.command('fetch_and_add_users') & filters.private & filters.user(ADMINS))
+async def fetch_and_add_users_command(client, message):
+    await fetch_and_add_users()
+    await message.reply("Users fetched from the channel and added to the database.")
 
-Total Users: <code>{total}</code>
-Successful: <code>{successful}</code>
-Blocked Users: <code>{blocked}</code>
-Deleted Accounts: <code>{deleted}</code>
-Unsuccessful: <code>{unsuccessful}</code></b>"""
-        
-        await pls_wait.edit(response)
 
-    else:
-        response = REPLY_ERROR
-        msg = await message.reply(response)
-        await asyncio.sleep(8)
-        await msg.delete()
+
+
+
+
+
+
+
 
 
 
