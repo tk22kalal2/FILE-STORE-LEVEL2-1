@@ -166,12 +166,18 @@ async def not_joined(client: Client, message: Message):
         disable_web_page_preview = True
     )
 
+
+
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 
 from config import ADMINS, CHANNEL_ID
+
+WAIT_MSG = "Please wait..."
+REPLY_ERROR = "Please reply to a message to broadcast."
+
 
 @Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
 async def get_users(client: Bot, message: Message):
@@ -229,5 +235,8 @@ Unsuccessful: <code>{unsuccessful}</code></b>"""
         msg = await message.reply(REPLY_ERROR)
         await asyncio.sleep(8)
         await msg.delete()
+
+
+
 
 
