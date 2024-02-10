@@ -13,21 +13,19 @@ from database.database import add_user, del_user, full_userbase, present_user
 
 SECONDS = int(os.getenv("SECONDS", "10")) #add time in seconds for waiting before delete
 
-async def fetch_and_add_users(self, client):
-    try:
-        async for member in client.get_chat_members(self, chat_id=CHANNEL_ID):
-            # Add the user ID to the database
-            await add_user(id)
-    except Exception as e:
-        print(f"Error fetching or adding users: {e}")
-
-
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
-    await fetch_and_add_users(Client)
-    if present_user:
+    chat_id = CHANNEL_ID  # Assuming CHANNEL_ID is defined elsewhere
+    members = await get_chat_members(client, chat_id)
+    if members:
+        for member in members:
+            await add_user(member.user.id)
         await message.reply("Users fetched from the channel and added to the database.")
+    else:
+        await message.reply("Failed to fetch users from the channel.")
+
+
 
 #=====================================================================================##
 
