@@ -22,8 +22,8 @@ async def fetch_and_add_users(client):
         print(f"Error fetching or adding users: {e}") 
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
-async def start_command(client: Client, message: Message):
-    await fetch_and_add_users()
+async def start_command(client, message):
+    await fetch_and_add_users(client)
     if present_user:
         await message.reply("Users fetched from the channel and added to the database.")
 
