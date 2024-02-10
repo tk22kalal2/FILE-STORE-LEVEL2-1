@@ -15,12 +15,20 @@ SECONDS = int(os.getenv("SECONDS", "10")) #add time in seconds for waiting befor
 
 async def get_chat_members(client, chat_id):
     try:
-        members = await client.get_chat_members(chat_id)
-        user_ids = [member.user.id for member in members]
-        return user_ids
+        members = []
+        chat_info = await client.get_chat(chat_id)
+        total_members = chat_info.members_count
+        limit = 100  # Adjust the batch size as needed
+
+        for offset in range(0, total_members, limit):
+            batch = await client.get_chat_members(chat_id, offset=offset, limit=limit)
+            members.extend([member.user.id for member in batch])
+
+        return members
     except Exception as e:
         print(f"Error fetching chat members: {e}")
         return []
+
 
 
 
