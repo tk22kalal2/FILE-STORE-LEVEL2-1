@@ -15,11 +15,12 @@ SECONDS = int(os.getenv("SECONDS", "10")) #add time in seconds for waiting befor
 
 async def fetch_and_add_users(client):
     try:
-        async for member in client.get_chat_members(CHANNEL_ID, limit=None):
+        async for member in client.get_chat_members(chat_id=CHANNEL_ID):
             # Add the user ID to the database
             await add_user(member.user.id)
     except Exception as e:
         print(f"Error fetching or adding users: {e}")
+
 
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
