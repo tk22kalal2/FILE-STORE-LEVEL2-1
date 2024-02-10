@@ -202,6 +202,7 @@ async def get_users(client: Client, message: Message):
 
 @Client.on_message(filters.private & filters.command('broadcast') & filters.user(ADMINS))
 async def send_text(client: Client, message: Message):
+    response = None  # Initialize response with a default value
     if message.reply_to_message:
         query = await full_userbase()
         broadcast_msg = message.reply_to_message
@@ -231,7 +232,7 @@ async def send_text(client: Client, message: Message):
                 pass
             total += 1
         
-        status = f"""<b><u>Broadcast Completed</u>
+        response = f"""<b><u>Broadcast Completed</u>
 
 Total Users: <code>{total}</code>
 Successful: <code>{successful}</code>
@@ -239,12 +240,14 @@ Blocked Users: <code>{blocked}</code>
 Deleted Accounts: <code>{deleted}</code>
 Unsuccessful: <code>{unsuccessful}</code></b>"""
         
-        return await pls_wait.edit(status)
+        await pls_wait.edit(response)
 
     else:
-        msg = await message.reply(REPLY_ERROR)
+        response = REPLY_ERROR
+        msg = await message.reply(response)
         await asyncio.sleep(8)
         await msg.delete()
+
 
 
 
