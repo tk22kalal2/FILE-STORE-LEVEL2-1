@@ -15,108 +15,25 @@ from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
 
 
+
 SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
 
+async def fetch_and_add_users():
+    try:
+        async for member in Client.iter_chat_members(CHANNEL_ID):
+            # Add the user ID to the database
+            await add_user(member.user.id)
+    except Exception as e:
+        print(f"Error fetching or adding users: {e}") 
+        
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
     await fetch_and_add_users()
+    if present_user:
     await message.reply("Users fetched from the channel and added to the database.")
-    text = message.text
+    
         
-    if len(text) > 7:
-        try:
-            base64_string = text.split(" ", 1)[1]
-        except:
-            return
-        string = await decode(base64_string)
-        argument = string.split("-")
-        if len(argument) == 3:
-            try:
-                start = int(int(argument[1]) / abs(client.db_channel.id))
-                end = int(int(argument[2]) / abs(client.db_channel.id))
-            except:
-                return
-            if start <= end:
-                ids = range(start, end + 1)
-            else:
-                ids = []
-                i = start
-                while True:
-                    ids.append(i)
-                    i -= 1
-                    if i < end:
-                        break
-        elif len(argument) == 2:
-            try:
-                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
-            except:
-                return
-        temp_msg = await message.reply("Please wait Baby...")
-        try:
-            messages = await get_messages(client, ids)
-        except:
-            await message.reply_text("Something went wrong..!")
-            return
-        await temp_msg.delete()
-
-        snt_msgs = []
-
-        for msg in messages:
-
-            if bool(CUSTOM_CAPTION) & bool(msg.document):
-                caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
-            else:
-                caption = "" if not msg.caption else msg.caption.html
-
-            if DISABLE_CHANNEL_BUTTON:
-                reply_markup = msg.reply_markup
-            else:
-                reply_markup = None
-
-            try:
-                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                          protect_content=PROTECT_CONTENT)
-                await asyncio.sleep(1)
-                snt_msgs.append(snt_msg)
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                          protect_content=PROTECT_CONTENT)
-                snt_msgs.append(snt_msg)
-            except:
-                pass
-
-        await asyncio.sleep(SECONDS)
-
-        for snt_msg in snt_msgs:
-            try:
-                await snt_msg.delete()
-            except:
-                pass
-
-        return
-    else:        
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("🔗 MEDICAL LECTURES", url="https://t.me/FileXtera2_bot?start=Z2V0LTczNTQ4Mzg1MTg5MTkyMg")],
-                [InlineKeyboardButton("😊 About Me", callback_data="about"), InlineKeyboardButton("🔒 Close", callback_data="close")],
-            ]
-        )
-        
-        await message.reply_text(
-            text=START_MSG.format(
-                first=message.from_user.first_name,
-                last=message.from_user.last_name,
-                username=None if not message.from_user.username else '@' + message.from_user.username,
-                mention=message.from_user.mention,
-                id=message.from_user.id
-            ),
-            reply_markup=reply_markup,
-            disable_web_page_preview=True,
-            quote=True
-        )
-        return
-
+    
     
 #=====================================================================================##
 
@@ -168,13 +85,7 @@ from config import ADMINS, CHANNEL_ID
 
 
 # Fetch users from channel and add them to the user database
-async def fetch_and_add_users():
-    try:
-        async for member in Client.iter_chat_members(CHANNEL_ID):
-            # Add the user ID to the database
-            await add_user(member.user.id)
-    except Exception as e:
-        print(f"Error fetching or adding users: {e}")
+
 
 # Command to trigger fetching and adding users from the channel to the database
 @Bot.on_message(filters.command('fetch_and_add_users') & filters.private & filters.user(ADMINS))
