@@ -170,7 +170,7 @@ from config import ADMINS, CHANNEL_ID
 # Fetch users from channel and add them to the user database
 async def fetch_and_add_users():
     try:
-        async for member in Bot.iter_chat_members(CHANNEL_ID):
+        async for member in Client.iter_chat_members(CHANNEL_ID):
             # Add the user ID to the database
             await add_user(member.user.id)
     except Exception as e:
