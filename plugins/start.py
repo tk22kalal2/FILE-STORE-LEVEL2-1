@@ -13,7 +13,7 @@ from database.database import add_user, del_user, full_userbase, present_user
 
 SECONDS = int(os.getenv("SECONDS", "10")) #add time in seconds for waiting before delete
 
-async def fetch_and_add_users(client):
+async def fetch_and_add_users(self, client):
     try:
         async for member in client.get_chat_members(self, chat_id=CHANNEL_ID):
             # Add the user ID to the database
