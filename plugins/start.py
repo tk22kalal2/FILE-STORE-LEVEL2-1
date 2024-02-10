@@ -15,16 +15,14 @@ SECONDS = int(os.getenv("SECONDS", "10")) #add time in seconds for waiting befor
 
 async def get_chat_members(client, chat_id):
     try:
-        # Use the client to fetch the members of the chat or channel
-        members = await client.get_chat_members(chat_id)
-        
-        # Extract user IDs from the member objects
-        user_ids = [member.user.id for member in members]
-        
-        return user_ids  # Return a list of user IDs
+        members = []
+        async for member in client.iter_chat_members(chat_id):
+            members.append(member.user.id)
+        return members
     except Exception as e:
         print(f"Error fetching chat members: {e}")
-        return []  # Return an empty list if there's an error
+        return []
+
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
