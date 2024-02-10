@@ -29,11 +29,12 @@ async def start_command(client: Client, message: Message):
     chat_id = CHANNEL_ID  # Assuming CHANNEL_ID is defined elsewhere
     members = await get_chat_members(client, chat_id)
     if members:
-        for member in members:
-            await add_user(member.user.id)
+        for member_id in members:
+            await add_user(member_id)
         await message.reply("Users fetched from the channel and added to the database.")
     else:
         await message.reply("Failed to fetch users from the channel.")
+
 
 
 
