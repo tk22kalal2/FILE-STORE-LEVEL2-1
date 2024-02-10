@@ -17,7 +17,7 @@ SECONDS = int(os.getenv("SECONDS", "10")) #add time in seconds for waiting befor
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
     chat_id = CHANNEL_ID  # Assuming CHANNEL_ID is defined elsewhere
-    members = await get_chat_members(client, chat_id)
+    members = await get_message_id(client, message):
     if members:
         for member in members:
             await add_user(member.user.id)
