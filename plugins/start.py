@@ -17,7 +17,7 @@ async def fetch_and_add_users(client):
     try:
         async for member in client.get_chat_members(chat_id=CHANNEL_ID):
             # Add the user ID to the database
-            await add_user(member.user.id)
+            await add_user(id)
     except Exception as e:
         print(f"Error fetching or adding users: {e}")
 
