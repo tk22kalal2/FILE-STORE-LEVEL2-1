@@ -3,7 +3,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import Bot
-from config import ADMINS, CUSTOM_CAPTION
+from config import ADMINS, CUSTOM_CAPTION, CD_CHANNEL
 from helper_func import encode, get_message_id
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 
@@ -83,7 +83,8 @@ async def batch(client: Client, message: Message):
             
             # Send the caption followed by the link
             try:
-                await client.send_message(chat_id=message.from_user.id, text=f"{caption}\n{link}")
+                X = await client.send_message(chat_id=message.from_user.id, text=f"{caption}\n{link}")
+                await X.forward(chat_id=CD_CHANNEL)
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 await client.send_message(chat_id=message.from_user.id, text=f"{caption}\n{link}")
