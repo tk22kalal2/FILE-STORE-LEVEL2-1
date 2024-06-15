@@ -71,8 +71,7 @@ async def batch(client: Client, message: Message):
                 caption = "" if not first_message.caption else first_message.caption.html
             await message.reply(f"{caption}\n{link}")
 
-    except Exception as e:
-        await message.reply(f"An error occurred: {e}")      
+    
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
 async def link_generator(client: Client, message: Message):
