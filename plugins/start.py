@@ -14,7 +14,7 @@ from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL
 from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
 
-SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
+SECONDS = int(os.getenv("SECONDS", "21600")) #add time im seconds for waitingwaiting before delete
 
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
@@ -90,15 +90,12 @@ async def start_command(client: Client, message: Message):
             except:
                 pass
 
+        k = await client.send_message(chat_id=message.from_user.id, text=f"LIMIT = 4 FILES IN 6 HOURS \n BOT WILL NOT WORK FOR NEXT 6 HOURS IF LIMIT EXCEEDED")
         await asyncio.sleep(SECONDS)
 
-        for snt_msg in snt_msgs:
-            try:
-                await snt_msg.delete()
-            except:
-                pass
-
-        return
+        for snt_msg in snt_msgs:            
+            await snt_msg.delete()
+        await k.delete()    
     else:
         reply_markup = InlineKeyboardMarkup(
             [
