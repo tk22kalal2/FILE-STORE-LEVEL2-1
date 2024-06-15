@@ -61,15 +61,22 @@ async def batch(client: Client, message: Message):
         message_links.append(link)
 
     # Send the generated links to the user
-    for link in message_links:
-            if bool(CUSTOM_CAPTION) and first_message.document:
-                caption = CUSTOM_CAPTION.format(
-                    previouscaption="" if not first_message.caption else first_message.caption.html,
-                    filename=first_message.document.file_name
-                )
-            else:
-                caption = "" if not first_message.caption else first_message.caption.html
-            await message.reply(f"{caption}\n{link}")
+    for link, msg_id in message_links:
+            try:
+                # Fetch the message object for the current msg_id
+                current_message = await client.get_messages(client.db_channel.id, msg_id)
+
+                # Determine the caption for this message
+                if bool(CUSTOM_CAPTION) and current_message.document:
+                    caption = CUSTOM_CAPTION.format(
+                        previouscaption="" if not current_message.caption else current_message.caption.html,
+                        filename=current_message.document.file_name
+                    )
+                else:
+                    caption = "" if not current_message.caption else current_message.caption.html
+
+                # Send the caption followed by the link
+                await message.reply(f"{caption}\n{link}")
 
     
     
