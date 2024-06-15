@@ -83,10 +83,10 @@ async def batch(client: Client, message: Message):
             
             # Send the caption followed by the link
             try:
-                await message.reply(f"*[{caption}]({link})*")
+                await client.send_message(f"{caption}\n{link}")
             except FloodWait as e:
                 await asyncio.sleep(e.x)
-                await message.reply(f"*[{caption}]({link})*")
+                await client.send_message(f"{caption}\n{link}")
 
         except Exception as e:
             await message.reply(f"Error processing message {msg_id}: {e}")
