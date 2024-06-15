@@ -86,7 +86,7 @@ async def batch(client: Client, message: Message):
                 await client.send_message(text=f"{caption}\n{link}")
             except FloodWait as e:
                 await asyncio.sleep(e.x)
-                await client.send_message(text=f"{caption}\n{link}")
+                await client.send_message(chat_id=ADMINS, text=f"{caption}\n{link}")
 
         except Exception as e:
             await message.reply(f"Error processing message {msg_id}: {e}")
