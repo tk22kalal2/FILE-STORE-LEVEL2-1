@@ -62,7 +62,17 @@ async def batch(client: Client, message: Message):
 
     # Send the generated links to the user
     for link in message_links:
-        await message.reply(f"Here is a link for one of the messages:\n{link}")      
+            if bool(CUSTOM_CAPTION) and first_message.document:
+                caption = CUSTOM_CAPTION.format(
+                    previouscaption="" if not first_message.caption else first_message.caption.html,
+                    filename=first_message.document.file_name
+                )
+            else:
+                caption = "" if not first_message.caption else first_message.caption.html
+            await message.reply(f"{caption}\n{link}")
+
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")      
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
 async def link_generator(client: Client, message: Message):
