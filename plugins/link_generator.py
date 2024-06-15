@@ -6,7 +6,16 @@ from bot import Bot
 from config import ADMINS, CUSTOM_CAPTION, CD_CHANNEL, CHANNEL_ID
 from helper_func import encode, get_message_id
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
+import re
 
+# Define a function to clean the caption
+def clean_caption(caption):
+    # Remove words starting with # or @
+    caption = re.sub(r'\s?[@#]\S+', '', caption)
+    # Remove URLs
+    caption = re.sub(r'http\S+', '', caption)
+    return caption
+    
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('batch'))
 async def batch(client: Client, message: Message):
     while True:
@@ -73,12 +82,15 @@ async def batch(client: Client, message: Message):
     
             # Determine the caption for this message
             if bool(CUSTOM_CAPTION) and current_message.document:
+                raw_caption = "" if not current_message.caption else current_message.caption.html
+                cleaned_caption = clean_caption(raw_caption)
                 caption = CUSTOM_CAPTION.format(
-                    previouscaption="" if not current_message.caption else current_message.caption.html,
+                    previouscaption=cleaned_caption,
                     filename=current_message.document.file_name
                 )
             else:
-                caption = "" if not current_message.caption else current_message.caption.html
+                raw_caption = "" if not current_message.caption else current_message.caption.html
+                caption = clean_caption(raw_caption)
     
             
             # Send the caption followed by the link
