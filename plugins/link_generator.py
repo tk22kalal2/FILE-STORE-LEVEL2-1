@@ -62,27 +62,26 @@ async def batch(client: Client, message: Message):
 
     # Send the generated links to the user
     for link, msg_id in message_links:
-            try:
-                # Fetch the message object for the current msg_id
-                current_message = await client.get_messages(client.db_channel.id, msg_id)
+        try:
+            # Fetch the message object for the current msg_id
+            current_message = await client.get_messages(client.db_channel.id, msg_id)
 
-                # Determine the caption for this message
-                if bool(CUSTOM_CAPTION) and current_message.document:
-                    caption = CUSTOM_CAPTION.format(
-                        previouscaption="" if not current_message.caption else current_message.caption.html,
-                        filename=current_message.document.file_name
-                    )
-                else:
-                    caption = "" if not current_message.caption else current_message.caption.html
+            # Determine the caption for this message
+            if bool(CUSTOM_CAPTION) and current_message.document:
+                caption = CUSTOM_CAPTION.format(
+                    previouscaption="" if not current_message.caption else current_message.caption.html,
+                    filename=current_message.document.file_name
+                )
+            else:
+                caption = "" if not current_message.caption else current_message.caption.html
 
-                # Send the caption followed by the link
-                await message.reply(f"{caption}\n{link}")
+            # Send the caption followed by the link
+            await message.reply(f"{caption}\n{link}")
 
-            except Exception as e:
-                await message.reply(f"Error processing message {msg_id}: {e}")
+        except Exception as e:
+            await message.reply(f"Error processing message {msg_id}: {e}")
 
-    except Exception as e:
-        await message.reply(f"An error occurred: {e}")
+    await message.reply("Batch processing completed.")
 
     
     
