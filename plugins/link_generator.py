@@ -84,10 +84,14 @@ async def batch(client: Client, message: Message):
             try:
                 await message.reply(f"*[{caption}]({link})*")
             except FloodWait as e:
-                await asyncio.sleep(e.x)  # Sleep for the duration specified by the FloodWait exception
+                await asyncio.sleep(e.x)
                 await message.reply(f"*[{caption}]({link})*")
-            except Exception as e:
-                await message.reply(f"Error sending message: {e}")
+
+        except Exception as e:
+            await message.reply(f"Error processing message {msg_id}: {e}")
+
+    # Inform the user that batch processing is completed
+    await message.reply("Batch processing completed.")
     
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
