@@ -78,6 +78,12 @@ async def batch(client: Client, message: Message):
                 # Send the caption followed by the link
                 await message.reply(f"{caption}\n{link}")
 
+            except Exception as e:
+                await message.reply(f"Error processing message {msg_id}: {e}")
+
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")
+
     
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
