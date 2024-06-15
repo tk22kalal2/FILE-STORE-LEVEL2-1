@@ -88,11 +88,6 @@ async def batch(client: Client, message: Message):
                 await message.reply(f"*[{caption}]({link})*")
             except Exception as e:
                 await message.reply(f"Error sending message: {e}")
-
-
-
-    await message.reply("Batch processing completed.")
-
     
     
 @Bot.on_message(filters.private & filters.user(ADMINS) & filters.command('genlink'))
