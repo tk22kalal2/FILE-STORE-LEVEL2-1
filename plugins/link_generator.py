@@ -83,7 +83,7 @@ async def batch(client: Client, message: Message):
             
             # Send the caption followed by the link
             try:
-                await client.send_message(text=f"{caption}\n{link}")
+                await client.send_message(chat_id=ADMINS, text=f"{caption}\n{link}")
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 await client.send_message(chat_id=ADMINS, text=f"{caption}\n{link}")
