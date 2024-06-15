@@ -53,19 +53,23 @@ async def batch(client: Client, message: Message):
             continue
 
     # Generate a list of links for each message between the first and second message
+    # Generate a list of links for each message between the first and second message
     message_links = []
     for msg_id in range(min(f_msg_id, s_msg_id), max(f_msg_id, s_msg_id) + 1):
-        string = f"get-{msg_id * abs(client.db_channel.id)}"
-        base64_string = await encode(string)
-        link = f"https://t.me/{client.username}?start={base64_string}"
-        message_links.append(link)
-
+        try:
+            string = f"get-{msg_id * abs(client.db_channel.id)}"
+            base64_string = await encode(string)
+            link = f"https://t.me/{client.username}?start={base64_string}"
+            message_links.append((link, msg_id))  # Append a tuple with link and msg_id
+        except Exception as e:
+            await message.reply(f"Error generating link for message {msg_id}: {e}")
+    
     # Send the generated links to the user
     for link, msg_id in message_links:
         try:
             # Fetch the message object for the current msg_id
             current_message = await client.get_messages(client.db_channel.id, msg_id)
-
+    
             # Determine the caption for this message
             if bool(CUSTOM_CAPTION) and current_message.document:
                 caption = CUSTOM_CAPTION.format(
@@ -74,12 +78,13 @@ async def batch(client: Client, message: Message):
                 )
             else:
                 caption = "" if not current_message.caption else current_message.caption.html
-
+    
             # Send the caption followed by the link
             await message.reply(f"{caption}\n{link}")
-
+    
         except Exception as e:
             await message.reply(f"Error processing message {msg_id}: {e}")
+
 
     await message.reply("Batch processing completed.")
 
