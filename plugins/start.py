@@ -66,7 +66,6 @@ async def start_command(client: Client, message: Message):
         snt_msgs = []
 
         for msg in messages:
-
             if bool(CUSTOM_CAPTION) & bool(msg.document):
                 caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
             else:
@@ -75,7 +74,9 @@ async def start_command(client: Client, message: Message):
             if DISABLE_CHANNEL_BUTTON:
                 reply_markup = msg.reply_markup
             else:
-                reply_markup = None
+                reply_markup = InlineKeyboardMarkup(
+                    [[InlineKeyboardButton("DELETE ME", callback_data=f"delete_{msg.id}")]]
+                )
 
             try:
                 snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
@@ -119,6 +120,17 @@ async def start_command(client: Client, message: Message):
             quote=True
         )
         return
+
+@Bot.on_callback_query(filters.regex(r"^delete_\d+$"))
+async def delete_message_callback(client: Client, callback_query: CallbackQuery):
+    try:
+        message_id = int(callback_query.data.split("_")[1])
+        await client.delete_messages(chat_id=callback_query.message.chat.id, message_ids=[message_id])
+        await callback_query.answer("Message deleted!", show_alert=True)
+    except Exception as e:
+        await callback_query.answer("Failed to delete the message!", show_alert=True)
+
+# Add other necessary callback query handlers here
 
     
 #=====================================================================================##
