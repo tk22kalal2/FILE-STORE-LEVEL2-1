@@ -14,7 +14,7 @@ from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL
 from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
 
-SECONDS = int(os.getenv("SECONDS", "30")) #add time im seconds for waitingwaiting before delete
+SECONDS = int(os.getenv("SECONDS", "21600")) #add time im seconds for waitingwaiting before delete
 
 async def schedule_deletion(msgs, delay):
     await asyncio.sleep(delay)
@@ -73,17 +73,9 @@ async def start_command(client: Client, message: Message):
         snt_msgs = []
 
         for msg in messages:
-            if bool(CUSTOM_CAPTION) & bool(msg.document):
-                caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
-            else:
-                caption = "" if not msg.caption else msg.caption.html
+            caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name) if CUSTOM_CAPTION and msg.document else msg.caption.html or ""
 
-            if DISABLE_CHANNEL_BUTTON:
-                reply_markup = msg.reply_markup
-            else:
-                reply_markup = InlineKeyboardMarkup(
-                    [[InlineKeyboardButton("DELETE ME", callback_data="close")]]
-                )
+            reply_markup = msg.reply_markup if DISABLE_CHANNEL_BUTTON else None
 
             try:
                 snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
@@ -127,17 +119,6 @@ async def start_command(client: Client, message: Message):
             quote=True
         )
         return
-
-@Bot.on_callback_query(filters.regex(r"^delete_\d+$"))
-async def delete_message_callback(client: Client, callback_query: CallbackQuery):
-    try:
-        message_id = int(callback_query.data.split("_")[1])
-        await client.delete_messages(chat_id=callback_query.message.chat.id, message_ids=[message_id])
-        await callback_query.answer("Message deleted!", show_alert=True)
-    except Exception as e:
-        await callback_query.answer("Failed to delete the message!", show_alert=True)
-
-# Add other necessary callback query handlers here
 
     
 #=====================================================================================##
