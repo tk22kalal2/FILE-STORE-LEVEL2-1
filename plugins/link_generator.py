@@ -62,7 +62,7 @@ async def batch(client: Client, message: Message):
             await second_message.reply("❌ Error\n\nthis Forwarded Post is not from my DB Channel or this Link is taken from DB Channel", quote=True)
             continue
 
-    bot_username = "{"X"}"
+    bot_username = {"X"}
     message_links = []
     for msg_id in range(min(f_msg_id, s_msg_id), max(f_msg_id, s_msg_id) + 1):
         try:
