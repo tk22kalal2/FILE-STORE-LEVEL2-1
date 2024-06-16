@@ -75,7 +75,7 @@ async def start_command(client: Client, message: Message):
                 reply_markup = msg.reply_markup
             else:
                 reply_markup = InlineKeyboardMarkup(
-                    [[InlineKeyboardButton("DELETE ME", callback_data=f"delete_{msg.id}")]]
+                    [[InlineKeyboardButton("DELETE ME", callback_data="close"]]
                 )
 
             try:
