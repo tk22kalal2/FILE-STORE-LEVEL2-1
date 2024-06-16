@@ -62,14 +62,14 @@ async def batch(client: Client, message: Message):
             await second_message.reply("❌ Error\n\nthis Forwarded Post is not from my DB Channel or this Link is taken from DB Channel", quote=True)
             continue
 
-    bot_username = "https://t.me/{"X"}"
+    xyz = "{\"X\"}"
     message_links = []
     for msg_id in range(min(f_msg_id, s_msg_id), max(f_msg_id, s_msg_id) + 1):
         try:
             string = f"get-{msg_id * abs(client.db_channel.id)}"
             base64_string = await encode(string)
             link = f"https://t.me/{client.username}?start={base64_string}"
-            linka = f"{bot_username}?start={base64_string}"
+            linka = f"https://t.me/{xyz}?start={base64_string}"
             message_links.append((linka, msg_id))  # Append a tuple with link and msg_id
         except Exception as e:
             await message.reply(f"Error generating link for message {msg_id}: {e}")
