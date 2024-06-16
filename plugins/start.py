@@ -90,11 +90,7 @@ async def start_command(client: Client, message: Message):
             except:
                 pass
 
-        k = await client.send_message(chat_id=message.from_user.id, text=f"LIMIT = 4 FILES IN 6 HOURS \n BOT WILL NOT WORK FOR NEXT 6 HOURS IF LIMIT EXCEEDED")
-        
-
-        asyncio.create_task(schedule_deletion(snt_msgs + [k], SECONDS))
-
+        asyncio.create_task(schedule_deletion(snt_msgs, SECONDS))
             
     else:
         reply_markup = InlineKeyboardMarkup(
