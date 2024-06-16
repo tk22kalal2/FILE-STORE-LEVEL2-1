@@ -69,13 +69,13 @@ async def batch(client: Client, message: Message):
             string = f"get-{msg_id * abs(client.db_channel.id)}"
             base64_string = await encode(string)
             link = f"https://t.me/{client.username}?start={base64_string}"
-            Xlink = f"https://t.me/{bot_username}?start={base64_string}"
-            message_links.append((link, msg_id))  # Append a tuple with link and msg_id
+            linka = f"https://t.me/{bot_username}?start={base64_string}"
+            message_links.append((linka, msg_id))  # Append a tuple with link and msg_id
         except Exception as e:
             await message.reply(f"Error generating link for message {msg_id}: {e}")
     
     # Send the generated links to the user
-    for link, msg_id in message_links:
+    for linka, msg_id in message_links:
         try:
             # Fetch the message object for the current msg_id
             current_message = await client.get_messages(client.db_channel.id, msg_id)
@@ -95,10 +95,10 @@ async def batch(client: Client, message: Message):
             
             # Send the caption followed by the link
             try:
-                X = await client.send_message(chat_id=CHANNEL_ID, text=f"{caption}\n{Xlink}")
+                X = await client.send_message(chat_id=CHANNEL_ID, text=f"{caption}\n{linka}")
             except FloodWait as e:
                 await asyncio.sleep(e.value)
-                await client.send_message(chat_id=CHANNEL_ID, text=f"{caption}\n{Xlink}")
+                await client.send_message(chat_id=CHANNEL_ID, text=f"{caption}\n{linka}")
 
         except Exception as e:
             await message.reply(f"Error processing message {msg_id}: {e}")
