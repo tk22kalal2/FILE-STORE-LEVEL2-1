@@ -8,3 +8,5 @@ dnspython
 # --- For-Web-Response ------- #
 aiohttp
 telethon==1.24.0
+gunicorn
+Flask
