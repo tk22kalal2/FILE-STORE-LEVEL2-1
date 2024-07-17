@@ -75,6 +75,19 @@ async def start():
     bot_info = await StreamBot.get_me()
     StreamBot.username = bot_info.username
     await initialize_clients()
+    try:
+        db_channel = await StreamBot.get_chat(Config.DB_CHANNEL)
+        StreamBot.db_channel = db_channel
+        test = await Bot.send_message(chat_id=db_channel.id, text="TEST")
+        await test.delete()
+        print("Bot is admin in db channel")
+
+    except Exception as e:
+        # Handle the exception, log it, and optionally take other actions
+        print(e)  # Print the error for debugging
+        print(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
+        print("\nBot Stopped bYE")
+        sys.exit()
     for name in files:
         with open(name) as a:
             patt = Path(a.name)
