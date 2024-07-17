@@ -21,14 +21,14 @@ logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 
 from pyrogram import Client
 from database.ia_filterdb import Media
-from info import *
+from config import *
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
 from aiohttp import web
 
 from pyrogram import Client
-from info import *
+from config import *
 
 class StreamXBot(Client):
     def __init__(self):
