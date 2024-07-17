@@ -76,7 +76,7 @@ async def start():
     StreamBot.username = bot_info.username
     await initialize_clients()
     try:
-        db_channel = await StreamBot.get_chat(Config.DB_CHANNEL)
+        db_channel = await StreamBot.get_chat(Config.CHANNEL_ID)
         StreamBot.db_channel = db_channel
         test = await Bot.send_message(chat_id=db_channel.id, text="TEST")
         await test.delete()
