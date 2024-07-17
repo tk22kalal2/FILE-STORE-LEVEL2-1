@@ -30,7 +30,7 @@ from aiohttp import web
 from pyrogram import Client
 from info import *
 
-class LazyPrincessXBot(Client):
+class StreamXBot(Client):
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -83,4 +83,4 @@ class LazyPrincessXBot(Client):
 multi_clients = {}
 work_loads = {}
 
-LazyPrincessBot = LazyPrincessXBot()
+StreamBot = StreamXBot()
