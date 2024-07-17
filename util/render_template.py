@@ -5,7 +5,7 @@
 # 🥰  Thank you for giving me credit @LazyDeveloperr  🥰
 # for any error please contact me -> telegram@LazyDeveloperr or insta @LazyDeveloperr 
 # rip paid developers 🤣 - >> No need to buy paid source code while @LazyDeveloperr is here 😍😍
-from info import *
+from config import *
 from lazybot import LazyPrincessBot
 from util.human_readable import humanbytes
 from util.file_properties import get_file_ids
