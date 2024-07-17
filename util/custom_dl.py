@@ -8,7 +8,7 @@
 import math
 import asyncio
 import logging
-from info import *
+from config import *
 from typing import Dict, Union
 from lazybot import work_loads
 from pyrogram import Client, utils, raw
