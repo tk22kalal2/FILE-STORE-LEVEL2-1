@@ -8,7 +8,7 @@
     # for any error please contact me -> telegram@LazyDeveloperr or insta @LazyDeveloperr 
 import asyncio
 import logging
-from info import *
+from config import *
 from pyrogram import Client
 from util.config_parser import TokenParser
 from . import multi_clients, work_loads, StreamBot
