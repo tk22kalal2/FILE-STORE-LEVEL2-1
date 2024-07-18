@@ -53,7 +53,7 @@ async def start_services():
             load = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(load)
             sys.modules["plugins." + plugin_name] = load
-            print("Imported => " + plugin_name)
+            print("Tech VJ Imported => " + plugin_name)
     if Var.ON_HEROKU:
         print("------------------ Starting Keep Alive Service ------------------")
         print()
