@@ -5,7 +5,7 @@ import sys
 import glob
 import asyncio
 import logging
-import importlib
+import importlib.util
 from pathlib import Path
 from pyrogram import idle
 from Adarsh.bot import StreamBot
