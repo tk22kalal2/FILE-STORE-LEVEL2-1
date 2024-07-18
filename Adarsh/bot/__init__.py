@@ -3,6 +3,7 @@ from pyrogram import Client
 import pyromod.listen
 from config import *
 from os import getcwd
+from ..vars import Var
 
 StreamBot = Client(
     name='Web Streamer',
