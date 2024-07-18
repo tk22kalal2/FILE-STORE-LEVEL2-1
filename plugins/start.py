@@ -65,40 +65,75 @@ async def start_command(client: Client, message: Message):
             return
         await temp_msg.delete()
 
-        snt_msgs = []
-
         for msg in messages:
+            caption = (
+                CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
+                if CUSTOM_CAPTION and msg.document else 
+                ("" if not msg.caption else msg.caption.html)
+            )
 
-            if bool(CUSTOM_CAPTION) & bool(msg.document):
-                caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
-            else:
-                caption = "" if not msg.caption else msg.caption.html
-
-            if DISABLE_CHANNEL_BUTTON:
-                reply_markup = msg.reply_markup
-            else:
-                reply_markup = None
+            reply_markup = None if DISABLE_CHANNEL_BUTTON else msg.reply_markup
 
             try:
-                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                          protect_content=PROTECT_CONTENT)
-                await asyncio.sleep(0.5)
-                snt_msgs.append(snt_msg)
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                snt_msg = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup,
-                                          protect_content=PROTECT_CONTENT)
-                snt_msgs.append(snt_msg)
-            except:
-                pass
+                snt_msg = await msg.copy(
+                    chat_id=message.from_user.id,
+                    caption=caption,
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=reply_markup,
+                    protect_content=PROTECT_CONTENT
+                )
+
+                # Add streaming feature
+                try:
+                    log_msg = await msg.forward(chat_id=Var.BIN_CHANNEL)
+                    stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+                    online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+                    
+                    msg_text ="""
+<b>ʏᴏᴜʀ ʟɪɴᴋ ɪs ɢᴇɴᴇʀᴀᴛᴇᴅ...⚡</b>
+
+<b>📧 ꜰɪʟᴇ ɴᴀᴍᴇ :- </b> <i>{}</i>
+
+<b>📦 ꜰɪʟᴇ sɪᴢᴇ :- </b> <i>{}</i>
+
+<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴡɪʟʟ ᴇxᴘɪʀᴇ ᴀꜰᴛᴇʀ 𝟸𝟺 ʜᴏᴜʀꜱ</b>
+
+<b>❇️  ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ : @MovievillaYT</b>"""
+
+                    await log_msg.reply_text(
+                        text=f"**ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ :** [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{message.from_user.id}`\n**Stream ʟɪɴᴋ :** {stream_link}",
+                        disable_web_page_preview=True,
+                        quote=True
+                    )
+
+                    await message.reply_text(
+                        text=msg_text.format(get_name(log_msg), humanbytes(get_media_file_size(msg)), online_link, stream_link),
+                        quote=True,
+                        disable_web_page_preview=True,
+                        reply_markup=InlineKeyboardMarkup([
+                            [InlineKeyboardButton("🖥️  ꜱᴛʀᴇᴀᴍ  🖥️", url=stream_link),
+                             InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)],
+                            [InlineKeyboardButton('🎪  ꜱᴜʙꜱᴄʀɪʙᴇ ᴍʏ ʏᴛ ᴄʜᴀɴɴᴇʟ  🎪', url='https://youtube.com/@NobiDeveloper')]
+                        ])
+                    )
+                except FloodWait as e:
+                    print(f"Sleeping for {str(e.x)}s")
+                    await asyncio.sleep(e.x)
+                    await client.send_message(
+                        chat_id=Var.BIN_CHANNEL,
+                        text=f"Gᴏᴛ FʟᴏᴏᴅWᴀɪᴛ ᴏғ {str(e.x)}s from [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n\n**𝚄𝚜𝚎𝚛 𝙸𝙳 :** `{str(message.from_user.id)}`",
+                        disable_web_page_preview=True
+                    )
+            except Exception as e:
+                print(f"Error copying message or generating stream link: {e}")
 
         await asyncio.sleep(SECONDS)
 
         for snt_msg in snt_msgs:
             try:
                 await snt_msg.delete()
-            except:
-                pass
+            except Exception as e:
+                print(f"Error deleting message: {e}")
 
         return
     else:
@@ -110,7 +145,7 @@ async def start_command(client: Client, message: Message):
                 ]
             ]
         )
-        
+
         await message.reply_text(
             text=START_MSG.format(
                 first=message.from_user.first_name,
