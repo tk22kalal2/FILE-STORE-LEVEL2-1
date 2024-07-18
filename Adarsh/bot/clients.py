@@ -24,7 +24,7 @@ async def initialize_clients():
                 print("This will take some time, please wait...")
             client = await Client(
                 name=str(client_id),
-                api_id=API_ID,
+                api_id=APP_ID,
                 api_hash=API_HASH,
                 bot_token=TG_BOT_TOKEN,
                 sleep_threshold=Var.SLEEP_THRESHOLD,
