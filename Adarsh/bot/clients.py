@@ -27,7 +27,7 @@ async def initialize_clients():
                 api_id=API_ID,
                 api_hash=API_HASH,
                 bot_token=TG_BOT_TOKEN,
-                sleep_threshold=SLEEP_THRESHOLD,
+                sleep_threshold=Var.SLEEP_THRESHOLD,
                 no_updates=True,
                 in_memory=True
             ).start()
