@@ -1,9 +1,21 @@
 # --- For-Bot-Working --------- #
 pyrogram
 TgCrypto
-pyromod==1.5
+
 # --- For-Database ------------ #
 pymongo
 dnspython
 # --- For-Web-Response ------- #
 aiohttp
+
+pyrogram
+
+
+python-dotenv
+motor
+aiofiles
+dnspython
+apscheduler
+requests
+psutil
+pyromod
