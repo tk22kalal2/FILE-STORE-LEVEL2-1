@@ -9,7 +9,7 @@ dnspython
 aiohttp
 
 pyrogram
-
+Pyromod==1.5
 
 python-dotenv
 motor
@@ -18,4 +18,4 @@ dnspython
 apscheduler
 requests
 psutil
-pyromod
+
