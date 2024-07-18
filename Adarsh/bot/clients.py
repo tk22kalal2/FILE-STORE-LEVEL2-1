@@ -6,7 +6,7 @@ from ..vars import Var
 from pyrogram import Client
 from Adarsh.utils.config_parser import TokenParser
 from . import multi_clients, work_loads, StreamBot
-
+from config import *
 
 async def initialize_clients():
     multi_clients[0] = StreamBot
@@ -24,10 +24,10 @@ async def initialize_clients():
                 print("This will take some time, please wait...")
             client = await Client(
                 name=str(client_id),
-                api_id=Var.API_ID,
-                api_hash=Var.API_HASH,
-                bot_token=token,
-                sleep_threshold=Var.SLEEP_THRESHOLD,
+                api_id=API_ID,
+                api_hash=API_HASH,
+                bot_token=BOT_TOKEN,
+                sleep_threshold=SLEEP_THRESHOLD,
                 no_updates=True,
                 in_memory=True
             ).start()
