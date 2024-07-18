@@ -16,6 +16,7 @@ from database.database import add_user, del_user, full_userbase, present_user
 from Adarsh.utils.file_properties import get_name, get_hash, get_media_file_size
 from urllib.parse import quote_plus
 from Adarsh.vars import Var
+from Adarsh.utils.human_readable import humanbytes
 SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
 
 
@@ -64,6 +65,7 @@ async def start_command(client: Client, message: Message):
             await message.reply_text("Something went wrong..!")
             return
         await temp_msg.delete()
+
 
         for msg in messages:
             caption = (
@@ -128,12 +130,6 @@ async def start_command(client: Client, message: Message):
                 print(f"Error copying message or generating stream link: {e}")
 
         await asyncio.sleep(SECONDS)
-
-        for snt_msg in snt_msgs:
-            try:
-                await snt_msg.delete()
-            except Exception as e:
-                print(f"Error deleting message: {e}")
 
         return
     else:
