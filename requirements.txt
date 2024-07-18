@@ -19,3 +19,8 @@ itsdangerous==2.0.1
 tenacity
 aiohttp
 pyromod
+aiofiles
+dnspython
+apscheduler
+requests
+psutil
