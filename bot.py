@@ -14,6 +14,7 @@ from aiohttp import web
 from Adarsh.server import web_server
 from Adarsh.utils.keepalive import ping_server
 from Adarsh.bot.clients import initialize_clients
+from config import CHANNEL_ID
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,6 +44,19 @@ async def start_services():
     print("------------------------------ DONE ------------------------------")
     print('\n')
     print('--------------------------- Importing ---------------------------')
+    try:
+        db_channel = await StreamBot.get_chat(CHANNEL_ID)
+        StreamBot.db_channel = db_channel
+        test = await StreamBot.send_message(chat_id=db_channel.id, text="TEST")
+        await test.delete()
+        print("Bot is admin in db channel")
+
+    except Exception as e:
+        # Handle the exception, log it, and optionally take other actions
+        print(e)  # Print the error for debugging
+        print(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
+        print("\nBot Stopped bYE")
+        sys.exit()
     for name in files:
         with open(name) as a:
             patt = Path(a.name)
