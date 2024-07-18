@@ -13,6 +13,8 @@ from Adarsh.bot import StreamBot
 from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
 from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
+from Adarsh.utils.file_properties import get_name, get_hash, get_media_file_size
+from urllib.parse import quote_plus
 
 SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
 
