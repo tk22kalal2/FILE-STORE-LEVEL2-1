@@ -92,15 +92,7 @@ async def start_command(client: Client, message: Message):
                     online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     
                     msg_text ="""
-<b>ʏᴏᴜʀ ʟɪɴᴋ ɪs ɢᴇɴᴇʀᴀᴛᴇᴅ...⚡</b>
-
-<b>📧 ꜰɪʟᴇ ɴᴀᴍᴇ :- </b> <i>{}</i>
-
-<b>📦 ꜰɪʟᴇ sɪᴢᴇ :- </b> <i>{}</i>
-
-<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴡɪʟʟ ᴇxᴘɪʀᴇ ᴀꜰᴛᴇʀ 𝟸𝟺 ʜᴏᴜʀꜱ</b>
-
-<b>❇️  ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ : @MovievillaYT</b>"""
+<b> COPY LINK AND DOWNLOAD IN ADVANCE DOWNLOAD MANAGER⚡</b>
 
                     await log_msg.reply_text(
                         text=f"**ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ :** [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{message.from_user.id}`\n**Stream ʟɪɴᴋ :** {stream_link}",
@@ -113,11 +105,7 @@ async def start_command(client: Client, message: Message):
                         quote=True,
                         disable_web_page_preview=True,
                         reply_markup=InlineKeyboardMarkup([
-                            [InlineKeyboardButton("🖥️  ꜱᴛʀᴇᴀᴍ  🖥️", url=stream_link),
-                             InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)],
-                            [InlineKeyboardButton('MX Player', url=f'intent:{online_link}#Intent;package=com.mxtech.videoplayer.ad;S.title={quote_plus(get_name(log_msg))};end')],
-                            [InlineKeyboardButton('VLC Player', url=f'vlc://{online_link}'),
-                             InlineKeyboardButton('Playit Player', url=f'playit://playerv2/video?url={online_link}&title={quote_plus(get_name(log_msg))}')]
+                            [InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)]                       
                         ])
                     )
                 except FloodWait as e:
