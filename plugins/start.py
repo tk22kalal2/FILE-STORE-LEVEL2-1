@@ -92,7 +92,7 @@ async def start_command(client: Client, message: Message):
                     online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     
                     msg_text ="""
-<b> COPY LINK AND DOWNLOAD IN ADVANCE DOWNLOAD MANAGER⚡</b>
+<b> COPY LINK AND DOWNLOAD IN ADVANCE DOWNLOAD MANAGER </b>"""
 
                     await log_msg.reply_text(
                         text=f"**ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ :** [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{message.from_user.id}`\n**Stream ʟɪɴᴋ :** {stream_link}",
