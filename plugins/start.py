@@ -115,7 +115,7 @@ async def start_command(client: Client, message: Message):
                         reply_markup=InlineKeyboardMarkup([
                             [InlineKeyboardButton("🖥️  ꜱᴛʀᴇᴀᴍ  🖥️", url=stream_link),
                              InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)],
-                            [InlineKeyboardButton('Open Website', web_app=WebAppInfo(url=f'https://tk22kalal.github.io/Education_Website_22-05-23/platform/download_page.html?online_link={quote_plus(online_link)}'))]
+                            [InlineKeyboardButton('Open Website', web_app=WebAppInfo(url=f'https://afrahtafreeh.site/platform/download_page.html?online_link={quote_plus(online_link)}'))]
                         ])
                     )
                 except FloodWait as e:
