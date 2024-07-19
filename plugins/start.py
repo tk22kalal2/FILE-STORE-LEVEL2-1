@@ -115,7 +115,9 @@ async def start_command(client: Client, message: Message):
                         reply_markup=InlineKeyboardMarkup([
                             [InlineKeyboardButton("🖥️  ꜱᴛʀᴇᴀᴍ  🖥️", url=stream_link),
                              InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)],
-                            [InlineKeyboardButton('Open Website', web_app=WebAppInfo(url=f'https://afrahtafreeh.site/platform/download_page.html?online_link={quote_plus(online_link)}'))]
+                            [InlineKeyboardButton('MX Player', url=f'intent:{online_link}#Intent;package=com.mxtech.videoplayer.ad;S.title={quote_plus(get_name(log_msg))};end')],
+                            [InlineKeyboardButton('VLC Player', url=f'vlc://{online_link}'),
+                             InlineKeyboardButton('Playit Player', url=f'playit://playerv2/video?url={online_link}&title={quote_plus(get_name(log_msg))}')]
                         ])
                     )
                 except FloodWait as e:
