@@ -81,7 +81,6 @@ async def start_command(client: Client, message: Message):
                     chat_id=message.from_user.id,
                     caption=caption,
                     parse_mode=ParseMode.HTML,
-                    reply_markup=reply_markup,
                     protect_content=PROTECT_CONTENT
                 )
 
@@ -117,8 +116,15 @@ async def start_command(client: Client, message: Message):
                         text=f"Gᴏᴛ FʟᴏᴏᴅWᴀɪᴛ ᴏғ {str(e.x)}s from [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n\n**𝚄𝚜𝚎𝚛 𝙸𝙳 :** `{str(message.from_user.id)}`",
                         disable_web_page_preview=True
                     )
+                except MessageIdInvalid as e:
+                    print(f"MessageIdInvalid: {e}")
+                    await message.reply_text("Failed to generate stream link due to invalid message ID.")
+                except ButtonUrlInvalid as e:
+                    print(f"ButtonUrlInvalid: {e}")
+                    await message.reply_text("Failed to generate stream link due to invalid button URL.")
             except Exception as e:
                 print(f"Error copying message or generating stream link: {e}")
+
 
         await asyncio.sleep(SECONDS)
 
