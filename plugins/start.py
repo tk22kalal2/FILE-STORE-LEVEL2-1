@@ -90,7 +90,8 @@ async def start_command(client: Client, message: Message):
                     log_msg = await msg.forward(chat_id=Var.BIN_CHANNEL)
                     stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
-                    adm_link = f"adm-download://{online_link}"
+                    
+                    
                     msg_text ="""
 <b> COPY LINK AND DOWNLOAD IN ADVANCE DOWNLOAD MANAGER </b>"""
 
@@ -105,7 +106,7 @@ async def start_command(client: Client, message: Message):
                         quote=True,
                         disable_web_page_preview=True,
                         reply_markup=InlineKeyboardMarkup([
-                            [InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=adm_link)]                       
+                            [InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)]                       
                         ])
                     )
                 except FloodWait as e:
