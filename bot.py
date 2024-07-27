@@ -16,6 +16,8 @@ from Adarsh.utils.keepalive import ping_server
 from Adarsh.bot.clients import initialize_clients
 from config import CHANNEL_ID
 import pytz
+from datetime import date, datetime
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
