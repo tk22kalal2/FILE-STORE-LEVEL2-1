@@ -15,7 +15,7 @@ from Adarsh.server import web_server
 from Adarsh.utils.keepalive import ping_server
 from Adarsh.bot.clients import initialize_clients
 from config import CHANNEL_ID
-
+import pytz
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -73,9 +73,14 @@ async def start_services():
         print()
         asyncio.create_task(ping_server())
     print('-------------------- Initalizing Web Server -------------------------')
+    me = await StreamBot.get_me()
+    tz = pytz.timezone('Asia/Kolkata')
+    today = date.today()
+    now = datetime.now(tz)
+    time = now.strftime("%H:%M:%S %p")
     app = web.AppRunner(await web_server())
     await app.setup()
-    bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.BIND_ADRESS
+    bind_address = "0.0.0.0"
     await web.TCPSite(app, bind_address, Var.PORT).start()
     print('----------------------------- DONE ---------------------------------------------------------------------')
     print('\n')
