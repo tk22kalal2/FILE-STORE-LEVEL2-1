@@ -1,76 +1,102 @@
 #(©)Codexbotz
 
-from aiohttp import web
-from plugins import web_server
-
-import pyromod.listen
-from pyrogram import Client
-from pyrogram.enums import ParseMode
+import os
 import sys
-from datetime import datetime
+import glob
+import asyncio
+import logging
+import importlib.util
+from pathlib import Path
+from pyrogram import idle
+from Adarsh.bot import StreamBot
+from Adarsh.vars import Var
+from aiohttp import web
+from Adarsh.server import web_server
+from Adarsh.utils.keepalive import ping_server
+from Adarsh.bot.clients import initialize_clients
+from config import CHANNEL_ID
 
-from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, FORCE_SUB_CHANNEL, CHANNEL_ID, PORT
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logging.getLogger("aiohttp").setLevel(logging.ERROR)
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
+logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 
-class Bot(Client):
-    def __init__(self):
-        super().__init__(
-            name="Bot",
-            api_hash=API_HASH,
-            api_id=APP_ID,
-            plugins={
-                "root": "plugins"
-            },
-            workers=TG_BOT_WORKERS,
-            bot_token=TG_BOT_TOKEN
-        )
-        self.LOGGER = LOGGER
+ppath = "plugins/*.py"
+files = glob.glob(ppath)
+StreamBot.start()
+loop = asyncio.get_event_loop()
 
-    async def start(self):
-        await super().start()
-        usr_bot_me = await self.get_me()
-        self.uptime = datetime.now()
 
-        if FORCE_SUB_CHANNEL:
-            try:
-                link = (await self.get_chat(FORCE_SUB_CHANNEL)).invite_link
-                if not link:
-                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL)
-                    link = (await self.get_chat(FORCE_SUB_CHANNEL)).invite_link
-                self.invitelink = link
-            except Exception as a:
-                self.LOGGER(__name__).warning(a)
-                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
-                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL}")
-                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/CodeXBotzSupport for support")
-                sys.exit()
-        try:
-            db_channel = await self.get_chat(CHANNEL_ID)
-            self.db_channel = db_channel
-            test = await self.send_message(chat_id = db_channel.id, text = "Test Message")
-            await test.delete()
-        except Exception as e:
-            self.LOGGER(__name__).warning(e)
-            self.LOGGER(__name__).warning(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
-            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/CodeXBotzSupport for support")
-            sys.exit()
+async def start_services():
+    print('\n')
+    print('------------------- Initalizing Telegram Bot -------------------')
+    bot_info = await StreamBot.get_me()
+    StreamBot.username = bot_info.username
+    print("------------------------------ DONE ------------------------------")
+    print()
+    print(
+        "---------------------- Initializing Clients ----------------------"
+    )
+    await initialize_clients()
+    print("------------------------------ DONE ------------------------------")
+    print('\n')
+    print('--------------------------- Importing ---------------------------')
+    try:
+        db_channel = await StreamBot.get_chat(CHANNEL_ID)
+        StreamBot.db_channel = db_channel
+        test = await StreamBot.send_message(chat_id=db_channel.id, text="TEST")
+        await test.delete()
+        print("Bot is admin in db channel")
 
-        self.set_parse_mode(ParseMode.HTML)
-        self.LOGGER(__name__).info(f"Bot Running..!\n\nCreated by \nhttps://t.me/CodeXBotz")
-        self.LOGGER(__name__).info(f""" \n\n       
-░█████╗░░█████╗░██████╗░███████╗██╗░░██╗██████╗░░█████╗░████████╗███████╗
-██╔══██╗██╔══██╗██╔══██╗██╔════╝╚██╗██╔╝██╔══██╗██╔══██╗╚══██╔══╝╚════██║
-██║░░╚═╝██║░░██║██║░░██║█████╗░░░╚███╔╝░██████╦╝██║░░██║░░░██║░░░░░███╔═╝
-██║░░██╗██║░░██║██║░░██║██╔══╝░░░██╔██╗░██╔══██╗██║░░██║░░░██║░░░██╔══╝░░
-╚█████╔╝╚█████╔╝██████╔╝███████╗██╔╝╚██╗██████╦╝╚█████╔╝░░░██║░░░███████╗
-░╚════╝░░╚════╝░╚═════╝░╚══════╝╚═╝░░╚═╝╚═════╝░░╚════╝░░░░╚═╝░░░╚══════╝
-                                          """)
-        self.username = usr_bot_me.username
-        #web-response
-        app = web.AppRunner(await web_server())
-        await app.setup()
-        bind_address = "0.0.0.0"
-        await web.TCPSite(app, bind_address, PORT).start()
+    except Exception as e:
+        # Handle the exception, log it, and optionally take other actions
+        print(e)  # Print the error for debugging
+        print(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
+        print("\nBot Stopped bYE")
+        sys.exit()
+    for name in files:
+        with open(name) as a:
+            patt = Path(a.name)
+            plugin_name = patt.stem.replace(".py", "")
+            plugins_dir = Path(f"plugins/{plugin_name}.py")
+            import_path = "plugins.{}".format(plugin_name)
+            spec = importlib.util.spec_from_file_location(import_path, plugins_dir)
+            load = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(load)
+            sys.modules["plugins." + plugin_name] = load
+            print("Tech VJ Imported => " + plugin_name)
+    if Var.ON_HEROKU:
+        print("------------------ Starting Keep Alive Service ------------------")
+        print()
+        asyncio.create_task(ping_server())
+    print('-------------------- Initalizing Web Server -------------------------')
+    app = web.AppRunner(await web_server())
+    await app.setup()
+    bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.BIND_ADRESS
+    await web.TCPSite(app, bind_address, Var.PORT).start()
+    print('----------------------------- DONE ---------------------------------------------------------------------')
+    print('\n')
+    print('---------------------------------------------------------------------------------------------------------')
+    print('---------------------------------------------------------------------------------------------------------')
+    print(' follow me for more such exciting bots! https://github.com/NobiDeveloper')
+    print('---------------------------------------------------------------------------------------------------------')
+    print('\n')
+    print('----------------------- Service Started -----------------------------------------------------------------')
+    print('                        bot =>> {}'.format((await StreamBot.get_me()).first_name))
+    print('                        server ip =>> {}:{}'.format(bind_address, Var.PORT))
+    print('                        Owner =>> {}'.format((Var.OWNER_USERNAME)))
+    if Var.ON_HEROKU:
+        print('                        app runnng on =>> {}'.format(Var.FQDN))
+    print('---------------------------------------------------------------------------------------------------------')
+    print('Give a star to my repo https://github.com/NobiDeveloper/Nobita-Stream-Bot  also follow me for new bots')
+    print('---------------------------------------------------------------------------------------------------------')
+    await idle()
 
-    async def stop(self, *args):
-        await super().stop()
-        self.LOGGER(__name__).info("Bot stopped.")
+if __name__ == '__main__':
+    try:
+        loop.run_until_complete(start_services())
+    except KeyboardInterrupt:
+        logging.info('----------------------- Service Stopped -----------------------')
