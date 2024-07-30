@@ -17,7 +17,14 @@ from Adarsh.utils.file_properties import get_name, get_hash, get_media_file_size
 from urllib.parse import quote_plus
 from Adarsh.vars import Var
 from Adarsh.utils.human_readable import humanbytes
-SECONDS = int(os.getenv("SECONDS", "10")) #add time im seconds for waitingwaiting before delete
+
+async def schedule_deletion(msgs, delay):
+    await asyncio.sleep(delay)
+    for msg in msgs:
+        try:
+            await msg.delete()
+        except Exception as e:
+            print(f"Error deleting message: {e}")
 
 
 @StreamBot.on_message(filters.command('start') & filters.private & subscribed)
@@ -98,13 +105,7 @@ async def start_command(client: Client, message: Message):
                     msg_text ="""
 <b> COPY LINK AND DOWNLOAD IN ADVANCE DOWNLOAD MANAGER </b>"""
 
-                    await log_msg.reply_text(
-                        text=f"**ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ :** [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{message.from_user.id}`\n**Stream ʟɪɴᴋ :** {stream_link}",
-                        disable_web_page_preview=True,
-                        quote=True
-                    )
-
-                    await message.reply_text(
+                    x = await message.reply_text(
                         text=msg_text.format(get_name(log_msg), humanbytes(get_media_file_size(msg)), online_link, stream_link),
                         quote=True,
                         disable_web_page_preview=True,
@@ -112,6 +113,7 @@ async def start_command(client: Client, message: Message):
                             [InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)]                       
                         ])
                     )
+                    asyncio.create_task(schedule_deletion(x, SECONDS))
                 except FloodWait as e:
                     print(f"Sleeping for {str(e.x)}s")
                     await asyncio.sleep(e.x)
@@ -130,7 +132,7 @@ async def start_command(client: Client, message: Message):
                 print(f"Error copying message or generating stream link: {e}")
 
 
-        await asyncio.sleep(SECONDS)
+        asyncio.create_task(schedule_deletion(snt_msg, SECONDS))
 
         return
     else:
