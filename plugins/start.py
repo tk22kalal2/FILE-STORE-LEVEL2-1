@@ -113,7 +113,7 @@ async def start_command(client: Client, message: Message):
                             [InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)]                       
                         ])
                     )
-                    asyncio.create_task(schedule_deletion(x, SECONDS))
+            
                 except FloodWait as e:
                     print(f"Sleeping for {str(e.x)}s")
                     await asyncio.sleep(e.x)
@@ -132,7 +132,7 @@ async def start_command(client: Client, message: Message):
                 print(f"Error copying message or generating stream link: {e}")
 
 
-        asyncio.create_task(schedule_deletion(snt_msg, SECONDS))
+        asyncio.create_task(schedule_deletion([snt_msg, x], SECONDS))
 
         return
     else:
