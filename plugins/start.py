@@ -1,8 +1,8 @@
 #(©)CodeXBotz
 
 
-
-
+from datetime import datetime, timedelta
+import pymongo
 import os
 import asyncio
 from pyrogram import Client, filters, __version__
@@ -20,7 +20,7 @@ from Adarsh.utils.human_readable import humanbytes
 
 dbclient = pymongo.MongoClient(DB_URI)
 database = dbclient[DB_NAME]
-video_requests = db["video_requests"]
+video_requests = database["video_requests"]
 
 MAX_VIDEOS_PER_DAY = 10
 TIME_LIMIT = timedelta(hours=24)
