@@ -23,7 +23,7 @@ database = dbclient[DB_NAME]
 video_requests = database["video_requests"]
 
 MAX_VIDEOS_PER_DAY = 10
-TIME_LIMIT = timedelta(hours=24)
+TIME_LIMIT = timedelta(hours=12)
 
 async def record_video_request(user_id: int):
     now = datetime.utcnow()
