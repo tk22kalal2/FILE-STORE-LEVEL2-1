@@ -129,7 +129,7 @@ async def start_command(client: Client, message: Message):
                     
                     
                     msg_text ="""
-<b> COPY LINK AND DOWNLOAD IN ADVANCE DOWNLOAD MANAGER </b>"""
+<b> INSTRUCTIONS- <a href='https://telegra.ph/INSTRUCTIONS-08-03-3'>Click Here</a> </b>"""
 
                     x = await message.reply_text(
                         text=msg_text.format(get_name(log_msg), humanbytes(get_media_file_size(msg)), online_link, stream_link),
