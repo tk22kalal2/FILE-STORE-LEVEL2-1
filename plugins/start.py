@@ -99,11 +99,17 @@ async def start_command(client: Client, message: Message):
 
 
         for msg in messages:
+            # Clean the caption to remove any text with @ and #
+            original_caption = "" if not msg.caption else msg.caption.html
+            cleaned_caption = re.sub(r'(\s|^)@[\w_]+', '', original_caption)
+            cleaned_caption = re.sub(r'(\s|^)#[\w_]+', '', cleaned_caption).strip()
+            
+            # Add @mynextpulse to the caption
             caption = (
-                CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
+                CUSTOM_CAPTION.format(previouscaption=cleaned_caption, filename=msg.document.file_name)
                 if CUSTOM_CAPTION and msg.document else 
-                ("" if not msg.caption else msg.caption.html)
-            )
+                cleaned_caption
+            ) + "\n@mynextpulse"
 
             if DISABLE_CHANNEL_BUTTON:
                 reply_markup = msg.reply_markup
